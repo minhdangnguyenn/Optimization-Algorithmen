@@ -1,91 +1,105 @@
 public class Rectangle {
+   private static int maxX;
+    private static int maxY;
+    private static int minX;
+    private static int minY;
+
+    private static boolean limitsInitialized = false;
+
+    // Instance fields
     private int x;
     private int y;
     private int area;
-    private boolean isVertical;
-    private int minX;
-    private int minY;
-    private int maxX;
-    private int maxY;
 
-    public Rectangle(int x, int y, boolean isVertical) {
-        this.x = x;
-        this.y = y;
-        this.area = x * y;
-        this.isVertical = isVertical;
+    public static void initializeLimits(int userMinX, int userMinY, int userMaxX, int userMaxY) {
+        if (limitsInitialized) {
+            throw new IllegalStateException("Limits have already been initialized");
+        }
+
+        if (userMinX >= userMaxX) {
+            throw new IllegalArgumentException("minX must be less than maxX");
+        }
+        if (userMinY >= userMaxY) {
+            throw new IllegalArgumentException("minY must be less than maxY");
+        }
+
+        minX = userMinX;
+        minY = userMinY;
+        maxX = userMaxX;
+        maxY = userMaxY;
+        limitsInitialized = true;
     }
 
-    public void setX(int x) throws Exception {
-        if (x < this.minX) {
-            throw new Exception("minX is too small: " + x);
+    // Constructor
+    public Rectangle(int x, int y) {
+        if (!limitsInitialized) {
+            throw new IllegalStateException("Rectangle limits not initialized. Call initializeLimits() first.");
         }
-
-        if (x > this.maxX) {
-            throw new Exception("miaxX is too big: " + x);
-        }
-
-        this.x = x;
+        setX(x);
+        setY(y);
         this.area = x*y;
     }
 
-    public int getY() {
-        return y;
+    // Validation methods
+    private static void validateLimitsInitialized() {
+        if (!limitsInitialized) {
+            throw new IllegalStateException("Limits not initialized");
+        }
     }
 
-    public void setY(int y) throws Exception {
-        if (y < this.minY) {
-            throw new Exception("minY is too small: " + y);
+    public static void validateX(int x) {
+        validateLimitsInitialized();
+        if (x < minX || x > maxX) {
+            throw new IllegalArgumentException(
+                    String.format("x must be between %d and %d, got %d", minX, maxX, x)
+            );
         }
+    }
 
-        if (y > this.maxY) {
-            throw new Exception("maxY is too big: " + y);
+    public static void validateY(int y) {
+        validateLimitsInitialized();
+        if (y < minY || y > maxY) {
+            throw new IllegalArgumentException(
+                    String.format("y must be between %d and %d, got %d", minY, maxY, y)
+            );
         }
+    }
 
-        this.y = y;
+    // Setters với validation
+    public void setX(int x) {
+        validateX(x);
+        this.x = x;
+
+        // recalculate area
         this.area = x*y;
     }
 
-    public int getX() {
-        return x;
+    public void setY(int y) {
+        validateY(y);
+        this.y = y;
+
+        // recalculate area
+        this.area = x*y;
     }
 
-    public int getArea() {
-        return area;
-    }
+    // Getters
+    public int getX() { return x; }
+    public int getY() { return y; }
 
-    public void setVertical(boolean vertical) {
-        isVertical = vertical;
-    }
-
-    public int getMinX() {
+    public static int getMinX() {
+        validateLimitsInitialized();
         return minX;
     }
-
-    public void setMinX(int minX) {
-        this.minX = minX;
-    }
-
-    public int getMinY() {
-        return minY;
-    }
-
-    public void setMinY(int minY) {
-        this.minY = minY;
-    }
-
-    public int getMaxX() {
+    public static int getMaxX() {
+        validateLimitsInitialized();
         return maxX;
     }
-
-    public void setMaxX(int maxX) {
-        this.maxX = maxX;
+    public static int getMinY() {
+        validateLimitsInitialized();
+        return minY;
     }
-
-    public int getMaxY() {
+    public static int getMaxY() {
+        validateLimitsInitialized();
         return maxY;
-    }
-
-    public void setMaxY(int maxY) {
-        this.maxY = maxY;
     }
 }
