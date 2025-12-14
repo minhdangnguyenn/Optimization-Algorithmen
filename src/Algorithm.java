@@ -39,12 +39,9 @@ public class Algorithm {
         return rectangles;
     }
 
+    // Rectangles is a desc sorted array base on the area of the rectangles
     public List<Rectangle> getRectangles() {
         return rectangles;
-    }
-
-    public void setRectangles(List<Rectangle> rectangles) {
-        this.rectangles = rectangles;
     }
 
     // First Fit Decreasing
