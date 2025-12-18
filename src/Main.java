@@ -22,9 +22,9 @@ public static void main(String[] args) {
 
     System.out.println("-------DRAW RECTANGLES-----------");
 
-    Algorithm algorithm = new Algorithm(testInstance.getRectangles(), testInstance.getBoxLength());
+    LocalSearch localSearch = new LocalSearch(testInstance.getRectangles(), testInstance.getBoxLength());
 
-    for (Rectangle r : algorithm.getRectangles()) {
+    for (Rectangle r : localSearch.getRectangles()) {
         r.draw();
         System.out.println();
         System.out.println("Rectangle Area: "+r.getArea());
@@ -34,5 +34,5 @@ public static void main(String[] args) {
     Box box = testInstance.getBox();
     box.draw();
 
-    algorithm.runFFD();
+    localSearch.runFFD();
 }

@@ -1,4 +1,4 @@
-# Optimization Algorithm
+# Optimization LocalSearch
 
 ## 🎯 Project Overview
 This project implements and compares **greedy** and **local search** algorithms for solving the **2D rectangle packing problem**. Given a set of rectangles with varying dimensions (rotatable by 90°) and a fixed container box size, the objective is to **minimize the number of boxes** required to pack all rectangles.

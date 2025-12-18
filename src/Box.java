@@ -1,15 +1,17 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class Box {
     private final int length;
-    private int leafArea;
-    private Vector<Rectangle> insideRectangles;
+    private int usedArea;
+    private List<Rectangle> rectangles = new ArrayList<>();
 
     // Constructor
     public Box(int length) {
         this.length = length;
         calculateArea();
-        this.insideRectangles = new Vector<>();
+        this.rectangles = new Vector<>();
     }
 
     public int getLength() {
@@ -18,21 +20,19 @@ public class Box {
 
     // Calculate area based on length and width
     private void calculateArea() {
-        this.leafArea = this.length * this.length;
+        this.usedArea = this.length * this.length;
     }
 
     // Method to remove rectangle by index
-    public Rectangle removeRectangle(int index) {
-        if (index < 0 || index >= insideRectangles.size()) {
-            throw new IndexOutOfBoundsException("Invalid rectangle index: " + index);
-        }
-        return insideRectangles.remove(index);
+    public void removeRectangle(Rectangle rec) {
+        rectangles.remove(rec);
+        usedArea -= rec.getArea();
     }
 
     // Method to calculate total area of all rectangles in the box
     public int calculateTotalRectanglesArea() {
         int totalArea = 0;
-        for (Rectangle rect : insideRectangles) {
+        for (Rectangle rect : rectangles) {
             totalArea += (rect.getWidth() * rect.getHeight());
         }
         return totalArea;
@@ -40,33 +40,42 @@ public class Box {
 
     // Method to calculate remaining empty area in the box
     public int calculateEmptyArea() {
-        return this.leafArea - calculateTotalRectanglesArea();
+        return this.usedArea - calculateTotalRectanglesArea();
     }
 
     // Override toString for better representation
     @Override
     public String toString() {
         return String.format("Box[L=%d, W=%d, Area=%d, Rectangles=%d, EmptyArea=%d]",
-                length, length, leafArea, insideRectangles.size(), calculateEmptyArea());
+                length, length, usedArea, rectangles.size(), calculateEmptyArea());
     }
 
     // Utility method to display box contents
     public void displayContents() {
         System.out.println("=== Box Information ===");
         System.out.println("Dimensions: " + length + " x " + length);
-        System.out.println("Total Area: " + leafArea);
-        System.out.println("Number of Rectangles: " + insideRectangles.size());
+        System.out.println("Total Area: " + usedArea);
+        System.out.println("Number of Rectangles: " + rectangles.size());
         System.out.println("Total Rectangles Area: " + calculateTotalRectanglesArea());
         System.out.println("Empty Area: " + calculateEmptyArea());
 
-        if (!insideRectangles.isEmpty()) {
+        if (!rectangles.isEmpty()) {
             System.out.println("\nRectangles in box:");
-            for (int i = 0; i < insideRectangles.size(); i++) {
-                Rectangle rect = insideRectangles.get(i);
+            for (int i = 0; i < rectangles.size(); i++) {
+                Rectangle rect = rectangles.get(i);
                 System.out.printf("  [%d] Rectangle: %d x %d (Area: %d)%n",
                         i, rect.getWidth(), rect.getHeight(), rect.getWidth() * rect.getHeight());
             }
         }
+    }
+
+    public boolean canFit(Rectangle r) {
+        return usedArea + r.getArea() <= length * length;
+    }
+
+    public void addRectangle(Rectangle r) {
+        rectangles.add(r);
+        usedArea += r.getArea();
     }
 
     public void draw() {
@@ -86,11 +95,23 @@ public class Box {
 
     public void placeRectangle(Rectangle rec, int x, int y) {
         // subtract the area
-        this.leafArea -= rec.getArea();
+        this.usedArea -= rec.getArea();
 
         // add inside the box
-        this.insideRectangles.add(rec);
+        this.rectangles.add(rec);
 
         // calculate the position
+    }
+
+    public List<Rectangle> getRectangles() {
+        return rectangles;
+    }
+
+    public int getFreeArea() {
+        return length * length - usedArea;
+    }
+
+    public boolean isEmpty() {
+        return rectangles.isEmpty();
     }
 }
