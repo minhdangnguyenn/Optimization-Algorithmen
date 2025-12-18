@@ -3,7 +3,7 @@ public static void main(String[] args) {
     TestInstance testInstance = new TestInstance(
             1,      // instance ID
             100,    // box length
-            20,     // number of rectangles
+            10,     // number of rectangles
             2, 10,  // min and max width
             3, 15,  // min and max height
             12345L  // random seed (for reproducibility)
@@ -24,6 +24,7 @@ public static void main(String[] args) {
 
     LocalSearch localSearch = new LocalSearch(testInstance.getRectangles(), testInstance.getBoxLength());
 
+    // collect all the rectangles into the local search
     for (Rectangle r : localSearch.getRectangles()) {
         r.draw();
         System.out.println();

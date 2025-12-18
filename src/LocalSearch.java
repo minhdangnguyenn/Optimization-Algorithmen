@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,13 +7,13 @@ public class LocalSearch {
     private List<Rectangle> rectangles;
     private int boxLength;
     private List<Box> boxes;
-    private int area;
+    private int boxArea;
 
     public LocalSearch(List<Rectangle> rectangles, int boxLength) {
         this.rectangles = sortRectanglesByAreaDesc(new ArrayList<>(rectangles));
         this.boxLength = boxLength;
         this.boxes = new ArrayList<>();
-        this.area = boxLength * boxLength;
+        this.boxArea = boxLength * boxLength;
     }
 
     /**
@@ -37,10 +36,12 @@ public class LocalSearch {
     public void runFFD() {
         boxes.clear();
 
+        // Greedy here, pull all into the first box if they can be fit in
         for (Rectangle r : rectangles) {
             boolean placed = false;
 
             for (Box box : boxes) {
+                // check if rectangle could be fit inside the box
                 if (box.canFit(r)) {
                     box.addRectangle(r);
                     placed = true;
@@ -55,7 +56,7 @@ public class LocalSearch {
             }
         }
 
-        System.out.println("Initial boxes size (FFD): " + boxes.size());
+        System.out.println("Number of box need to use for the FFD: " + boxes.size());
     }
 
     /**

@@ -6,12 +6,14 @@ public class Box {
     private final int length;
     private int usedArea;
     private List<Rectangle> rectangles = new ArrayList<>();
+    private int area;
 
     // Constructor
     public Box(int length) {
         this.length = length;
-        calculateArea();
+        this.area = calculateArea();
         this.rectangles = new Vector<>();
+        this.usedArea = 0;
     }
 
     public int getLength() {
@@ -19,8 +21,8 @@ public class Box {
     }
 
     // Calculate area based on length and width
-    private void calculateArea() {
-        this.usedArea = this.length * this.length;
+    private int calculateArea() {
+        return this.length * this.length;
     }
 
     // Method to remove rectangle by index
