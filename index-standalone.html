@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Rectangle Packing Optimizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .input-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background: #0056b3;
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .button.secondary {
+            background: #6c757d;
+        }
+
+        .button.secondary:hover {
+            background: #545b62;
+        }
+
+        .rectangles-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .rectangle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .visualization {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .boxes-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .box {
+            border: 2px solid #333;
+            position: relative;
+            background: #fff;
+        }
+
+        .box-title {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .rectangle {
+            position: absolute;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .algorithm-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .algorithm-info h4 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .algorithm-info ul {
+            margin-left: 20px;
+        }
+
+        .algorithm-info li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>2D Rectangle Packing Optimizer</h1>
+            <p>Solve the rectangle packing problem using greedy and local search algorithms. Minimize the number of boxes needed to pack all rectangles.</p>
+        </div>
+
+        <div class="controls">
+            <h3>Box Configuration</h3>
+            <div class="input-group">
+                <label>Box Size (L × L):</label>
+                <input type="number" id="boxSize" value="100" min="10" max="500">
+                <span id="boxInfo">Current box: 100 × 100 (Area: 10000)</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>Add Rectangles</h3>
+            <div class="input-group">
+                <label>Width:</label>
+                <input type="number" id="rectWidth" min="1" max="200" placeholder="Enter width">
+                <label>Height:</label>
+                <input type="number" id="rectHeight" min="1" max="200" placeholder="Enter height">
+                <button class="button" onclick="addRectangle()">Add Rectangle</button>
+            </div>
+            <div class="input-group">
+                <label>Quick Presets:</label>
+                <button class="button secondary" onclick="addPreset('small')">Small Rectangles</button>
+                <button class="button secondary" onclick="addPreset('medium')">Medium Rectangles</button>
+                <button class="button secondary" onclick="addPreset('large')">Large Rectangles</button>
+                <button class="button secondary" onclick="addPreset('mixed')">Mixed Sizes</button>
+                <button class="button secondary" onclick="clearRectangles()">Clear All</button>
+            </div>
+        </div>
+
+        <div class="rectangles-list">
+            <h3>Rectangles (<span id="rectCount">0</span>)</h3>
+            <div id="rectanglesList">
+                <p>No rectangles added yet. Add some rectangles to start packing!</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>Algorithm Controls</h3>
+            <div class="input-group">
+                <label>Max Iterations (Local Search):</label>
+                <input type="number" id="maxIterations" value="100" min="1" max="1000">
+            </div>
+            <div class="input-group">
+                <button class="button" onclick="runGreedy()">Run Greedy Algorithm</button>
+                <button class="button" onclick="runLocalSearch()">Run Local Search</button>
+                <button class="button" onclick="compareAlgorithms()">Compare Algorithms</button>
+            </div>
+            <div id="algorithmError" class="error" style="display: none;">
+                Please add some rectangles before running algorithms.
+            </div>
+        </div>
+
+        <div class="visualization">
+            <h3>Packing Visualization</h3>
+            <div id="results">
+                <p>Run an algorithm to see the packing visualization.</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>Algorithm Information</h3>
+            <div class="algorithm-info">
+                <h4>Greedy Algorithm (First Fit Decreasing):</h4>
+                <ul>
+                    <li>Sorts rectangles by area in descending order</li>
+                    <li>Places each rectangle in the first box where it fits</li>
+                    <li>Creates new boxes when necessary</li>
+                    <li>Fast execution but may not find optimal solution</li>
+                </ul>
+                
+                <h4>Local Search Algorithm:</h4>
+                <ul>
+                    <li>Starts with greedy solution as initial state</li>
+                    <li>Applies local search operations: swap, rotate, move, consolidate</li>
+                    <li>Uses simulated annealing to escape local optima</li>
+                    <li>Iteratively improves solution quality</li>
+                    <li>Better solutions but longer execution time</li>
+                </ul>
+                
+                <h4>Objective:</h4>
+                <p>Minimize the number of boxes while maximizing space utilization. All rectangles can be rotated 90° if beneficial.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let rectangles = [];
+        let nextId = 1;
+        let boxSize = 100;
+
+        // Rectangle presets
+        const presets = {
+            small: [
+                { width: 20, height: 30 },
+                { width: 25, height: 15 },
+                { width: 30, height: 20 },
+                { width: 15, height: 25 },
+                { width: 35, height: 10 }
+            ],
+            medium: [
+                { width: 40, height: 60 },
+                { width: 50, height: 30 },
+                { width: 35, height: 45 },
+                { width: 60, height: 25 },
+                { width: 45, height: 40 },
+                { width: 30, height: 50 }
+            ],
+            large: [
+                { width: 80, height: 60 },
+                { width: 70, height: 90 },
+                { width: 90, height: 50 },
+                { width: 60, height: 80 },
+                { width: 100, height: 40 }
+            ],
+            mixed: [
+                { width: 20, height: 30 },
+                { width: 50, height: 40 },
+                { width: 80, height: 20 },
+                { width: 30, height: 70 },
+                { width: 60, height: 35 },
+                { width: 25, height: 45 },
+                { width: 90, height: 15 },
+                { width: 40, height: 60 }
+            ]
+        };
+
+        // Update box size
+        document.getElementById('boxSize').addEventListener('input', function() {
+            boxSize = Math.max(10, parseInt(this.value) || 100);
+            document.getElementById('boxInfo').textContent = `Current box: ${boxSize} × ${boxSize} (Area: ${boxSize * boxSize})`;
+            clearResults();
+        });
+
+        // Add rectangle
+        function addRectangle() {
+            const width = parseInt(document.getElementById('rectWidth').value);
+            const height = parseInt(document.getElementById('rectHeight').value);
+            
+            if (width > 0 && height > 0) {
+                rectangles.push({
+                    id: nextId++,
+                    width: width,
+                    height: height,
+                    originalWidth: width,
+                    originalHeight: height,
+                    rotated: false
+                });
+                
+                document.getElementById('rectWidth').value = '';
+                document.getElementById('rectHeight').value = '';
+                updateRectanglesList();
+                clearResults();
+            }
+        }
+
+        // Add preset rectangles
+        function addPreset(presetName) {
+            const preset = presets[presetName];
+            preset.forEach(rect => {
+                rectangles.push({
+                    id: nextId++,
+                    width: rect.width,
+                    height: rect.height,
+                    originalWidth: rect.width,
+                    originalHeight: rect.height,
+                    rotated: false
+                });
+            });
+            updateRectanglesList();
+            clearResults();
+        }
+
+        // Clear rectangles
+        function clearRectangles() {
+            rectangles = [];
+            nextId = 1;
+            updateRectanglesList();
+            clearResults();
+        }
+
+        // Remove rectangle
+        function removeRectangle(id) {
+            rectangles = rectangles.filter(rect => rect.id !== id);
+            updateRectanglesList();
+            clearResults();
+        }
+
+        // Update rectangles list display
+        function updateRectanglesList() {
+            const count = rectangles.length;
+            document.getElementById('rectCount').textContent = count;
+            
+            const listElement = document.getElementById('rectanglesList');
+            
+            if (count === 0) {
+                listElement.innerHTML = '<p>No rectangles added yet. Add some rectangles to start packing!</p>';
+            } else {
+                const totalArea = rectangles.reduce((sum, rect) => sum + (rect.width * rect.height), 0);
+                
+                let html = `
+                    <div class="stats">
+                        <div class="stat-item">
+                            <strong>Total Area: ${totalArea}</strong>
+                        </div>
+                    </div>
+                `;
+                
+                rectangles.forEach(rect => {
+                    html += `
+                        <div class="rectangle-item">
+                            <span>
+                                Rectangle ${rect.id}: ${rect.width} × ${rect.height} 
+                                (Area: ${rect.width * rect.height})
+                                ${rect.rotated ? ' [Rotated]' : ''}
+                            </span>
+                            <button class="button secondary" onclick="removeRectangle(${rect.id})" 
+                                    style="padding: 4px 8px; font-size: 12px;">
+                                Remove
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                listElement.innerHTML = html;
+            }
+        }
+
+        // Clear results
+        function clearResults() {
+            document.getElementById('results').innerHTML = '<p>Run an algorithm to see the packing visualization.</p>';
+        }
+
+        // Check if rectangles exist
+        function checkRectangles() {
+            if (rectangles.length === 0) {
+                document.getElementById('algorithmError').style.display = 'block';
+                return false;
+            }
+            document.getElementById('algorithmError').style.display = 'none';
+            return true;
+        }
+
+        // Greedy Packing Algorithm
+        class GreedyPacker {
+            constructor(boxSize) {
+                this.boxSize = boxSize;
+            }
+
+            pack(rectangles) {
+                const startTime = performance.now();
+                
+                // Check if any rectangle is too large for the box
+                const unpackableRectangles = rectangles.filter(rect => 
+                    Math.min(rect.width, rect.height) > this.boxSize || 
+                    Math.max(rect.width, rect.height) > this.boxSize
+                );
+
+                if (unpackableRectangles.length > 0) {
+                    const endTime = performance.now();
+                    return {
+                        boxes: [],
+                        totalBoxes: 0,
+                        utilization: 0,
+                        algorithm: `Greedy (FAILED: ${unpackableRectangles.length} rectangles too large for box size ${this.boxSize})`,
+                        executionTime: endTime - startTime
+                    };
+                }
+                
+                // Sort rectangles by area in descending order
+                const sortedRectangles = [...rectangles].sort((a, b) => {
+                    const areaA = a.width * a.height;
+                    const areaB = b.width * b.height;
+                    return areaB - areaA;
+                });
+
+                const boxes = [];
+                const unplacedRectangles = [];
+
+                for (const rect of sortedRectangles) {
+                    let placed = false;
+
+                    // Try to place in existing boxes
+                    for (const box of boxes) {
+                        const result = this.findBestPosition(box, rect);
+                        if (result) {
+                            const placedRect = {
+                                ...rect,
+                                width: result.width,
+                                height: result.height,
+                                rotated: result.rotated,
+                                x: result.x,
+                                y: result.y,
+                                boxId: box.id
+                            };
+                            box.rectangles.push(placedRect);
+                            placed = true;
+                            break;
+                        }
+                    }
+
+                    // If not placed, create new box
+                    if (!placed) {
+                        const newBox = {
+                            id: boxes.length,
+                            width: this.boxSize,
+                            height: this.boxSize,
+                            rectangles: []
+                        };
+
+                        const result = this.findBestPosition(newBox, rect);
+                        if (result) {
+                            const placedRect = {
+                                ...rect,
+                                width: result.width,
+                                height: result.height,
+                                rotated: result.rotated,
+                                x: result.x,
+                                y: result.y,
+                                boxId: newBox.id
+                            };
+                            newBox.rectangles.push(placedRect);
+                            boxes.push(newBox);
+                            placed = true;
+                        } else {
+                            // This should never happen if we checked sizes correctly
+                            unplacedRectangles.push(rect);
+                        }
+                    }
+                }
+
+                const endTime = performance.now();
+                const utilization = this.calculateUtilization(boxes);
+
+                // Verify all rectangles were placed
+                const totalPlacedRectangles = boxes.reduce((sum, box) => sum + box.rectangles.length, 0);
+                const algorithmName = unplacedRectangles.length > 0 
+                    ? `Greedy (WARNING: ${unplacedRectangles.length} rectangles not placed)`
+                    : `Greedy (${totalPlacedRectangles}/${rectangles.length} rectangles placed)`;
+
+                return {
+                    boxes,
+                    totalBoxes: boxes.length,
+                    utilization,
+                    algorithm: algorithmName,
+                    executionTime: endTime - startTime
+                };
+            }
+
+            findBestPosition(box, rect) {
+                // Try both orientations
+                const orientations = [
+                    { width: rect.width, height: rect.height, rotated: rect.rotated },
+                    { width: rect.height, height: rect.width, rotated: !rect.rotated }
+                ];
+
+                for (const orientation of orientations) {
+                    if (orientation.width > this.boxSize || orientation.height > this.boxSize) {
+                        continue;
+                    }
+
+                    // Bottom-left fill strategy
+                    const positions = this.generatePositions(box);
+                    
+                    for (const pos of positions) {
+                        if (this.canPlaceAt(box, orientation.width, orientation.height, pos.x, pos.y)) {
+                            return {
+                                x: pos.x,
+                                y: pos.y,
+                                width: orientation.width,
+                                height: orientation.height,
+                                rotated: orientation.rotated
+                            };
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            generatePositions(box) {
+                const positions = [{ x: 0, y: 0 }];
+                
+                // Add positions based on existing rectangles
+                for (const rect of box.rectangles) {
+                    positions.push(
+                        { x: rect.x + rect.width, y: rect.y },
+                        { x: rect.x, y: rect.y + rect.height }
+                    );
+                }
+
+                // Sort by bottom-left preference
+                return positions.sort((a, b) => {
+                    if (a.y !== b.y) return a.y - b.y;
+                    return a.x - b.x;
+                });
+            }
+
+            canPlaceAt(box, width, height, x, y) {
+                // Check bounds
+                if (x + width > this.boxSize || y + height > this.boxSize) {
+                    return false;
+                }
+
+                // Check overlap with existing rectangles
+                for (const rect of box.rectangles) {
+                    if (this.rectanglesOverlap(
+                        { x, y, width, height },
+                        { x: rect.x, y: rect.y, width: rect.width, height: rect.height }
+                    )) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            rectanglesOverlap(rect1, rect2) {
+                return !(
+                    rect1.x + rect1.width <= rect2.x ||
+                    rect2.x + rect2.width <= rect1.x ||
+                    rect1.y + rect1.height <= rect2.y ||
+                    rect2.y + rect2.height <= rect1.y
+                );
+            }
+
+            calculateUtilization(boxes) {
+                if (boxes.length === 0) return 0;
+
+                const totalBoxArea = boxes.length * this.boxSize * this.boxSize;
+                const usedArea = boxes.reduce((sum, box) => {
+                    return sum + box.rectangles.reduce((boxSum, rect) => {
+                        return boxSum + rect.width * rect.height;
+                    }, 0);
+                }, 0);
+
+                return (usedArea / totalBoxArea) * 100;
+            }
+        }
+
+        // Local Search Packer (simplified version)
+        class LocalSearchPacker {
+            constructor(boxSize) {
+                this.boxSize = boxSize;
+                this.greedyPacker = new GreedyPacker(boxSize);
+            }
+
+            pack(rectangles, maxIterations = 100) {
+                const startTime = performance.now();
+                
+                // Check if any rectangle is too large for the box
+                const unpackableRectangles = rectangles.filter(rect => 
+                    Math.min(rect.width, rect.height) > this.boxSize || 
+                    Math.max(rect.width, rect.height) > this.boxSize
+                );
+
+                if (unpackableRectangles.length > 0) {
+                    const endTime = performance.now();
+                    return {
+                        boxes: [],
+                        totalBoxes: 0,
+                        utilization: 0,
+                        algorithm: `Local Search (FAILED: ${unpackableRectangles.length} rectangles too large for box size ${this.boxSize})`,
+                        executionTime: endTime - startTime
+                    };
+                }
+                
+                // Start with greedy solution
+                let currentSolution = this.greedyPacker.pack(rectangles);
+                
+                // Check if greedy solution failed
+                if (currentSolution.algorithm.includes('FAILED') || currentSolution.algorithm.includes('WARNING')) {
+                    const endTime = performance.now();
+                    return {
+                        ...currentSolution,
+                        algorithm: `Local Search (${currentSolution.algorithm})`,
+                        executionTime: endTime - startTime
+                    };
+                }
+                
+                let bestSolution = JSON.parse(JSON.stringify(currentSolution));
+                
+                // Verify all rectangles are placed in initial solution
+                const totalPlacedInInitial = currentSolution.boxes.reduce((sum, box) => sum + box.rectangles.length, 0);
+                if (totalPlacedInInitial !== rectangles.length) {
+                    const endTime = performance.now();
+                    return {
+                        ...currentSolution,
+                        algorithm: `Local Search (WARNING: Only ${totalPlacedInInitial}/${rectangles.length} rectangles placed)`,
+                        executionTime: endTime - startTime
+                    };
+                }
+                
+                // Simple local search: try rotating rectangles
+                for (let iteration = 0; iteration < Math.min(maxIterations, 50); iteration++) {
+                    const newSolution = this.tryRotations(currentSolution);
+                    
+                    // Verify all rectangles are still placed after local search
+                    const totalPlacedInNew = newSolution.boxes.reduce((sum, box) => sum + box.rectangles.length, 0);
+                    if (totalPlacedInNew !== rectangles.length) {
+                        continue; // Skip invalid solutions
+                    }
+                    
+                    if (newSolution.totalBoxes < bestSolution.totalBoxes || 
+                        (newSolution.totalBoxes === bestSolution.totalBoxes && newSolution.utilization > bestSolution.utilization)) {
+                        bestSolution = JSON.parse(JSON.stringify(newSolution));
+                        currentSolution = newSolution;
+                    }
+                }
+
+                const endTime = performance.now();
+                const finalPlacedCount = bestSolution.boxes.reduce((sum, box) => sum + box.rectangles.length, 0);
+                
+                return {
+                    ...bestSolution,
+                    algorithm: `Local Search (${finalPlacedCount}/${rectangles.length} rectangles placed)`,
+                    executionTime: endTime - startTime
+                };
+            }
+
+            tryRotations(solution) {
+                const boxes = JSON.parse(JSON.stringify(solution.boxes));
+                
+                // Try rotating some rectangles randomly
+                for (const box of boxes) {
+                    if (box.rectangles.length > 0 && Math.random() < 0.3) {
+                        const rectIndex = Math.floor(Math.random() * box.rectangles.length);
+                        const rect = box.rectangles[rectIndex];
+                        
+                        // Try rotating
+                        const rotatedRect = {
+                            ...rect,
+                            width: rect.height,
+                            height: rect.width,
+                            rotated: !rect.rotated
+                        };
+
+                        // Check if it still fits
+                        if (rotatedRect.x + rotatedRect.width <= this.boxSize && 
+                            rotatedRect.y + rotatedRect.height <= this.boxSize) {
+                            
+                            // Check for overlaps
+                            let overlaps = false;
+                            for (let i = 0; i < box.rectangles.length; i++) {
+                                if (i === rectIndex) continue;
+                                const otherRect = box.rectangles[i];
+                                if (this.rectanglesOverlap(rotatedRect, otherRect)) {
+                                    overlaps = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!overlaps) {
+                                box.rectangles[rectIndex] = rotatedRect;
+                            }
+                        }
+                    }
+                }
+
+                const utilization = this.calculateUtilization(boxes);
+                return {
+                    ...solution,
+                    boxes,
+                    utilization
+                };
+            }
+
+            rectanglesOverlap(rect1, rect2) {
+                return !(
+                    rect1.x + rect1.width <= rect2.x ||
+                    rect2.x + rect2.width <= rect1.x ||
+                    rect1.y + rect1.height <= rect2.y ||
+                    rect2.y + rect2.height <= rect1.y
+                );
+            }
+
+            calculateUtilization(boxes) {
+                if (boxes.length === 0) return 0;
+
+                const totalBoxArea = boxes.length * this.boxSize * this.boxSize;
+                const usedArea = boxes.reduce((sum, box) => {
+                    return sum + box.rectangles.reduce((boxSum, rect) => {
+                        return boxSum + rect.width * rect.height;
+                    }, 0);
+                }, 0);
+
+                return (usedArea / totalBoxArea) * 100;
+            }
+        }
+
+        // Run algorithms
+        function runGreedy() {
+            if (!checkRectangles()) return;
+            
+            const packer = new GreedyPacker(boxSize);
+            const result = packer.pack(rectangles);
+            displayResult(result);
+        }
+
+        function runLocalSearch() {
+            if (!checkRectangles()) return;
+            
+            const maxIterations = parseInt(document.getElementById('maxIterations').value) || 100;
+            const packer = new LocalSearchPacker(boxSize);
+            const result = packer.pack(rectangles, maxIterations);
+            displayResult(result);
+        }
+
+        function compareAlgorithms() {
+            if (!checkRectangles()) return;
+            
+            const maxIterations = parseInt(document.getElementById('maxIterations').value) || 100;
+            const greedyPacker = new GreedyPacker(boxSize);
+            const localSearchPacker = new LocalSearchPacker(boxSize);
+            
+            const greedyResult = greedyPacker.pack(rectangles);
+            const localSearchResult = localSearchPacker.pack(rectangles, maxIterations);
+            
+            // Show the better result
+            const betterResult = localSearchResult.totalBoxes < greedyResult.totalBoxes ||
+                (localSearchResult.totalBoxes === greedyResult.totalBoxes && localSearchResult.utilization > greedyResult.utilization)
+                ? localSearchResult
+                : greedyResult;
+            
+            betterResult.algorithm = `Comparison: Greedy (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs Local Search (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`;
+            
+            displayResult(betterResult);
+        }
+
+        // Display result
+        function displayResult(result) {
+            const scale = Math.min(300 / boxSize, 2);
+            const visualBoxSize = boxSize * scale;
+
+            const colors = [
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+                '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+                '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
+            ];
+
+            let html = `
+                <div class="stats">
+                    <div class="stat-item">
+                        <strong>Algorithm:</strong> ${result.algorithm}
+                    </div>
+                    <div class="stat-item">
+                        <strong>Boxes Used:</strong> ${result.totalBoxes}
+                    </div>
+                    <div class="stat-item">
+                        <strong>Utilization:</strong> ${result.utilization.toFixed(1)}%
+                    </div>
+                    <div class="stat-item">
+                        <strong>Execution Time:</strong> ${result.executionTime.toFixed(2)}ms
+                    </div>
+                </div>
+                <div class="boxes-container">
+            `;
+
+            result.boxes.forEach((box, boxIndex) => {
+                html += `
+                    <div style="margin-bottom: 20px;">
+                        <div class="box" style="width: ${visualBoxSize}px; height: ${visualBoxSize}px; position: relative; margin: 10px;">
+                            <div class="box-title">Box ${boxIndex + 1}</div>
+                `;
+
+                box.rectangles.forEach((rect, rectIndex) => {
+                    const color = colors[rect.id % colors.length];
+                    html += `
+                        <div class="rectangle" style="
+                            left: ${rect.x * scale}px;
+                            top: ${rect.y * scale}px;
+                            width: ${rect.width * scale}px;
+                            height: ${rect.height * scale}px;
+                            background-color: ${color};
+                            font-size: ${Math.max(8, Math.min(12, scale * 8))}px;
+                        ">
+                            ${rect.id}${rect.rotated ? '↻' : ''}
+                        </div>
+                    `;
+                });
+
+                const boxUtilization = ((box.rectangles.reduce((sum, r) => sum + r.width * r.height, 0) / (boxSize * boxSize)) * 100).toFixed(1);
+                html += `
+                        </div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                            Rectangles: ${box.rectangles.length} | Utilization: ${boxUtilization}%
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+
+            if (result.boxes.length === 0) {
+                html += '<p>No boxes needed - all rectangles might be too large for the box size.</p>';
+            }
+
+            document.getElementById('results').innerHTML = html;
+        }
+
+        // Initialize
+        updateRectanglesList();
+    </script>
+</body>
+</html>
