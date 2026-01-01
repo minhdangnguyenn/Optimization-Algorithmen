@@ -3,12 +3,14 @@ import { Rectangle } from '../types';
 
 interface RectangleInputProps {
   onAddRectangle: (rectangle: Omit<Rectangle, 'id'>) => void;
+  onAddMultipleRectangles: (rectangles: Omit<Rectangle, 'id'>[]) => void;
   onClearRectangles: () => void;
   rectangles: Rectangle[];
 }
 
 export const RectangleInput: React.FC<RectangleInputProps> = ({
   onAddRectangle,
+  onAddMultipleRectangles,
   onClearRectangles,
   rectangles
 }) => {
@@ -36,27 +38,28 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
   };
 
   const handleAddPreset = (preset: { width: number; height: number }[]) => {
-    preset.forEach(rect => {
-      onAddRectangle({
-        width: rect.width,
-        height: rect.height,
-        originalWidth: rect.width,
-        originalHeight: rect.height,
-        rotated: false
-      });
-    });
+    const rectangleData = preset.map(rect => ({
+      width: rect.width,
+      height: rect.height,
+      originalWidth: rect.width,
+      originalHeight: rect.height,
+      rotated: false
+    }));
+    onAddMultipleRectangles(rectangleData);
   };
 
   const generateRandomInstance = () => {
     const count = parseInt(instanceCount);
     if (count <= 0 || count > 100) return;
 
+    // Generate all rectangles at once with proper unique IDs
+    const rectanglesToAdd = [];
     for (let i = 0; i < count; i++) {
       // Generate random integer dimensions between 5 and 80
       const randomWidth = Math.floor(Math.random() * 76) + 5;  // 5-80
       const randomHeight = Math.floor(Math.random() * 76) + 5; // 5-80
       
-      onAddRectangle({
+      rectanglesToAdd.push({
         width: randomWidth,
         height: randomHeight,
         originalWidth: randomWidth,
@@ -64,6 +67,9 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         rotated: false
       });
     }
+
+    // Add all rectangles at once to ensure unique IDs
+    onAddMultipleRectangles(rectanglesToAdd);
   };
 
   const presets = {

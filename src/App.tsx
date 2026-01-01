@@ -21,6 +21,16 @@ function App(): React.ReactElement {
     setResult(null); // Clear previous results
   };
 
+  const addMultipleRectangles = (rectangleDataArray: Omit<Rectangle, 'id'>[]): void => {
+    const newRectangles: Rectangle[] = rectangleDataArray.map((rectData, index) => ({
+      ...rectData,
+      id: nextId + index
+    }));
+    setRectangles((prev: Rectangle[]) => [...prev, ...newRectangles]);
+    setNextId((prev: number) => prev + rectangleDataArray.length);
+    setResult(null); // Clear previous results
+  };
+
   const removeRectangle = (id: number): void => {
     setRectangles((prev: Rectangle[]) => prev.filter((rect: Rectangle) => rect.id !== id));
     setResult(null); // Clear previous results
@@ -68,6 +78,7 @@ function App(): React.ReactElement {
 
       <RectangleInput
         onAddRectangle={addRectangle}
+        onAddMultipleRectangles={addMultipleRectangles}
         onClearRectangles={clearRectangles}
         rectangles={rectangles}
       />
