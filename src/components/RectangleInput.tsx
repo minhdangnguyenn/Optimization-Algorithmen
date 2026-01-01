@@ -14,6 +14,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
 }) => {
   const [width, setWidth] = useState<string>('');
   const [height, setHeight] = useState<string>('');
+  const [instanceCount, setInstanceCount] = useState<string>('10');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +45,25 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         rotated: false
       });
     });
+  };
+
+  const generateRandomInstance = () => {
+    const count = parseInt(instanceCount);
+    if (count <= 0 || count > 100) return;
+
+    for (let i = 0; i < count; i++) {
+      // Generate random integer dimensions between 5 and 80
+      const randomWidth = Math.floor(Math.random() * 76) + 5;  // 5-80
+      const randomHeight = Math.floor(Math.random() * 76) + 5; // 5-80
+      
+      onAddRectangle({
+        width: randomWidth,
+        height: randomHeight,
+        originalWidth: randomWidth,
+        originalHeight: randomHeight,
+        rotated: false
+      });
+    }
   };
 
   const presets = {
@@ -139,6 +159,28 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         >
           Mixed Sizes
         </button>
+      </div>
+
+      <div className="input-group">
+        <label>Random Instance Generator:</label>
+        <input
+          type="number"
+          value={instanceCount}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstanceCount(e.target.value)}
+          min="1"
+          max="100"
+          placeholder="Number of rectangles"
+        />
+        <button 
+          className="button secondary" 
+          onClick={generateRandomInstance}
+          disabled={parseInt(instanceCount) <= 0 || parseInt(instanceCount) > 100}
+        >
+          Generate {instanceCount} Random Rectangles
+        </button>
+        <span style={{ fontSize: '12px', color: '#666' }}>
+          Generates rectangles with random integer dimensions (5-80)
+        </span>
       </div>
 
       <div className="input-group">
