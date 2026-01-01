@@ -26,6 +26,10 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       // Add small delay to show loading state
       await new Promise(resolve => setTimeout(resolve, 100));
       
+      /**
+       * const packer = new WidthBasedGreedyPacker(boxSize);
+       * const packer = new HeightBasedGreedyPacker(boxSize);
+       */
       const packer = new GreedyPacker(boxSize);
       const result = packer.pack(rectangles);
       onResult(result);

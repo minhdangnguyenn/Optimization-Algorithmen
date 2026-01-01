@@ -31,6 +31,7 @@ export class GreedyPacker {
 export class WidthBasedGreedyPacker {
   private solver: BinPackingSolver;
 
+  // passing another criteria in constructor, using width based instead of area 
   constructor(boxSize: number) {
     this.solver = new BinPackingSolver(boxSize, new WidthBasedSelection());
   }
@@ -43,6 +44,7 @@ export class WidthBasedGreedyPacker {
 export class HeightBasedGreedyPacker {
   private solver: BinPackingSolver;
 
+  // passing another criteria in constructor, using height based instead of area 
   constructor(boxSize: number) {
     this.solver = new BinPackingSolver(boxSize, new HeightBasedSelection());
   }

@@ -10,7 +10,7 @@ export const RectangleList: React.FC<RectangleListProps> = ({
   rectangles,
   onRemoveRectangle
 }) => {
-  const totalArea = rectangles.reduce((sum, rect) => sum + (rect.width * rect.height), 0);
+  const totalArea = rectangles.reduce((sum: number, rect: Rectangle) => sum + (rect.width * rect.height), 0);
 
   return (
     <div className="rectangles-list">
@@ -27,7 +27,7 @@ export const RectangleList: React.FC<RectangleListProps> = ({
           </div>
           
           <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-            {rectangles.map((rect) => (
+            {rectangles.map((rect: Rectangle) => (
               <div key={rect.id} className="rectangle-item">
                 <span>
                   Rectangle {rect.id}: {rect.width} × {rect.height} 

@@ -1,5 +1,4 @@
-import React from 'react';
-import { PackingResult } from '../types';
+import { Box, PackingResult } from '../types';
 
 interface PackingVisualizationProps {
   result: PackingResult | null;
@@ -52,7 +51,7 @@ export const PackingVisualization: React.FC<PackingVisualizationProps> = ({
       </div>
 
       <div className="boxes-container">
-        {result.boxes.map((box, boxIndex) => (
+        {result.boxes.map((box: Box, boxIndex: number) => (
           <div key={box.id} style={{ marginBottom: '20px' }}>
             <div
               className="box"
