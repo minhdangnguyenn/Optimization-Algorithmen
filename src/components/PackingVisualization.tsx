@@ -40,6 +40,9 @@ export const PackingVisualization: React.FC<PackingVisualizationProps> = ({
           <strong>Algorithm:</strong> {result.algorithm}
         </div>
         <div className="stat-item">
+          <strong>Summary:</strong> <b>{result.totalBoxes} boxes</b> used for {result.boxes.reduce((total, box) => total + box.rectangles.length, 0)} rectangles
+        </div>
+        <div className="stat-item">
           <strong>Boxes Used:</strong> {result.totalBoxes}
         </div>
         <div className="stat-item">

@@ -197,7 +197,7 @@ body {
 .stats {
   display: flex;
   gap: 20px;
-  margin-top: 15px;
+  margin: 15px;
   flex-wrap: wrap;
 }
 
