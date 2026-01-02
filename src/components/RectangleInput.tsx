@@ -144,7 +144,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         </div>
       </form>
 
-      <div className="input-group">
+      {/* <div className="input-group">
         <label>Quick Presets:</label>
         <button 
           className="button secondary" 
@@ -170,7 +170,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         >
           Mixed Sizes
         </button>
-      </div>
+      </div> */}
 
       <div className="input-group">
         <label>Random Instance Generator:</label>
