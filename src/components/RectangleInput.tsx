@@ -7,6 +7,7 @@ interface RectangleInputProps {
   onClearRectangles: () => void;
   rectangles: Rectangle[];
   boxSize: number;
+  onBoxSizeChange: (newBoxSize: number) => void;
 }
 
 export const RectangleInput: React.FC<RectangleInputProps> = ({
@@ -14,11 +15,15 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
   onAddMultipleRectangles,
   onClearRectangles,
   rectangles,
-  boxSize
+  boxSize,
+  onBoxSizeChange
 }) => {
   const [width, setWidth] = useState<string>('');
   const [height, setHeight] = useState<string>('');
   const [instanceCount, setInstanceCount] = useState<string>('10');
+  const [minSideLength, setMinSideLength] = useState<string>('5');
+  const [maxSideLength, setMaxSideLength] = useState<string>('50');
+  const [instanceBoxSize, setInstanceBoxSize] = useState<string>('100');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,17 +57,28 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
 
   const generateRandomInstance = () => {
     const count = parseInt(instanceCount);
-    if (count <= 0 || count > 1001) return;
+    const minSide = parseInt(minSideLength);
+    const maxSide = parseInt(maxSideLength);
+    const newBoxSize = parseInt(instanceBoxSize);
+    
+    // Validation
+    if (count <= 0 || count > 500) return;
+    if (minSide <= 0 || maxSide <= 0) return;
+    if (minSide > maxSide) return;
+    if (newBoxSize <= 0) return;
+    if (maxSide > newBoxSize) return;
+
+    // Update box size if different from current
+    if (newBoxSize !== boxSize) {
+      onBoxSizeChange(newBoxSize);
+    }
 
     // Generate all rectangles at once with proper unique IDs
     const rectanglesToAdd = [];
     for (let i = 0; i < count; i++) {
-      // Generate random integer dimensions between 5 and boxSize (but max 1000)
-      const maxDimension = Math.min(boxSize, 1000);
-      const minDimension = Math.min(5, maxDimension);
-      
-      const randomWidth = Math.floor(Math.random() * (maxDimension - minDimension + 1)) + minDimension;
-      const randomHeight = Math.floor(Math.random() * (maxDimension - minDimension + 1)) + minDimension;
+      // Generate random integer dimensions between minSide and maxSide
+      const randomWidth = Math.floor(Math.random() * (maxSide - minSide + 1)) + minSide;
+      const randomHeight = Math.floor(Math.random() * (maxSide - minSide + 1)) + minSide;
       
       rectanglesToAdd.push({
         width: randomWidth,
@@ -174,23 +190,67 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
 
       <div className="input-group">
         <label>Random Instance Generator:</label>
-        <input
-          type="number"
-          value={instanceCount}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstanceCount(e.target.value)}
-          min="1"
-          max="1000"
-          placeholder="Number of rectangles"
-        />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '10px' }}>
+          <div>
+            <label style={{ fontSize: '12px' }}>Number of rectangles:</label>
+            <input
+              type="number"
+              value={instanceCount}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstanceCount(e.target.value)}
+              min="1"
+              max="500"
+              placeholder="Count"
+            />
+          </div>
+          <div>
+            <label style={{ fontSize: '12px' }}>Box size (L×L):</label>
+            <input
+              type="number"
+              value={instanceBoxSize}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstanceBoxSize(e.target.value)}
+              min="10"
+              max="2000"
+              placeholder="Box size"
+            />
+          </div>
+          <div>
+            <label style={{ fontSize: '12px' }}>Min side length:</label>
+            <input
+              type="number"
+              value={minSideLength}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMinSideLength(e.target.value)}
+              min="1"
+              max="1000"
+              placeholder="Min"
+            />
+          </div>
+          <div>
+            <label style={{ fontSize: '12px' }}>Max side length:</label>
+            <input
+              type="number"
+              value={maxSideLength}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMaxSideLength(e.target.value)}
+              min="1"
+              max="1000"
+              placeholder="Max"
+            />
+          </div>
+        </div>
         <button 
           className="button secondary" 
           onClick={generateRandomInstance}
-          disabled={parseInt(instanceCount) <= 0 || parseInt(instanceCount) > 1001}
+          disabled={
+            parseInt(instanceCount) <= 0 || parseInt(instanceCount) > 500 ||
+            parseInt(minSideLength) <= 0 || parseInt(maxSideLength) <= 0 ||
+            parseInt(minSideLength) > parseInt(maxSideLength) ||
+            parseInt(instanceBoxSize) <= 0 ||
+            parseInt(maxSideLength) > parseInt(instanceBoxSize)
+          }
         >
-          Generate {instanceCount} Random Rectangles
+          Generate Instance
         </button>
-        <span style={{ fontSize: '12px', color: '#666' }}>
-          Generates rectangles with random integer dimensions (5-{Math.min(boxSize, 1000)})
+        <span style={{ fontSize: '12px', color: '#666', display: 'block', marginTop: '5px' }}>
+          Creates {instanceCount} rectangles with sides between {minSideLength}-{maxSideLength} for box size {instanceBoxSize}×{instanceBoxSize}
         </span>
       </div>
 

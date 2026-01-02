@@ -64,6 +64,12 @@ function App(): React.ReactElement {
     setResult(null);
   };
 
+  const handleBoxSizeChangeFromInput = (newSize: number): void => {
+    setBoxSize(newSize);
+    setBoxSizeInput(newSize.toString());
+    setResult(null);
+  };
+
   const handleResult = (newResult: PackingResult): void => {
     setResult(newResult);
   };
@@ -78,7 +84,7 @@ function App(): React.ReactElement {
         </p>
       </div>
 
-      <div className="controls">
+      {/* <div className="controls">
         <h3>Box Configuration</h3>
         <div className="input-group">
           <label>Box Size (L × L):</label>
@@ -93,7 +99,7 @@ function App(): React.ReactElement {
           />
           <span>Current box: {boxSize} × {boxSize} (Area: {boxSize * boxSize})</span>
         </div>
-      </div>
+      </div> */}
 
       <RectangleInput
         onAddRectangle={addRectangle}
@@ -101,6 +107,7 @@ function App(): React.ReactElement {
         onClearRectangles={clearRectangles}
         rectangles={rectangles}
         boxSize={boxSize}
+        onBoxSizeChange={handleBoxSizeChangeFromInput}
       />
 
       <RectangleList
