@@ -133,7 +133,7 @@ function App(): React.ReactElement {
         isRunning={isAlgorithmRunning}
       />
 
-      <div className="controls">
+      {/* <div className="controls">
         <h3>Algorithm Information</h3>
         <div style={{ textAlign: 'left', fontSize: '14px', lineHeight: '1.6' }}>
           <h4>Greedy Algorithm (First Fit Decreasing):</h4>
@@ -162,7 +162,7 @@ function App(): React.ReactElement {
           <h4>Objective:</h4>
           <p>Minimize the number of boxes while maximizing space utilization. All rectangles can be rotated 90° if beneficial.</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
