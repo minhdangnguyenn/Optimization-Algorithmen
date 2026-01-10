@@ -19,6 +19,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
   const [isRunning, setIsRunning] = useState(false);
   const [maxIterations, setMaxIterations] = useState(100);
   const [greedyCriteria, setGreedyCriteria] = useState<'area' | 'width' | 'height'>('area');
+  const [neighborhoodType, setNeighborhoodType] = useState<'geometry' | 'rule' | 'overlap'>('geometry');
 
   const setRunningState = (running: boolean) => {
     setIsRunning(running);
@@ -78,9 +79,18 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       // Add small delay to show loading state and reset
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const packer = new LocalSearchPacker(boxSize);
+      const packer = new LocalSearchPacker(boxSize, neighborhoodType);
       const result = packer.pack(rectangles, maxIterations);
-      onResult(result);
+      
+      const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
+                              neighborhoodType === 'rule' ? 'Rule-Based' :
+                              neighborhoodType === 'overlap' ? 'Overlap-Based' :
+                              'Mixed (All)';
+      
+      onResult({
+        ...result,
+        algorithm: `Local Search - ${neighborhoodName} (${result.totalBoxes} boxes, ${result.utilization.toFixed(1)}%)`
+      });
     } catch (error) {
       console.error('Error running local search algorithm:', error);
     } finally {
@@ -101,7 +111,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       await new Promise(resolve => setTimeout(resolve, 200));
       
       const greedyPacker = getGreedyPacker(boxSize);
-      const localSearchPacker = new LocalSearchPacker(boxSize);
+      const localSearchPacker = new LocalSearchPacker(boxSize, neighborhoodType);
       
       const greedyResult = greedyPacker.pack(rectangles);
       const localSearchResult = localSearchPacker.pack(rectangles, maxIterations);
@@ -114,10 +124,13 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       
       const criteriaName = greedyCriteria === 'area' ? 'Area' : 
                           greedyCriteria === 'width' ? 'Width' : 'Height';
+      const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
+                              neighborhoodType === 'rule' ? 'Rule-Based' :
+                              'Overlap-Based';
       
       onResult({
         ...betterResult,
-        algorithm: `Comparison: Greedy ${criteriaName}-based (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs Local Search (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`
+        algorithm: `Comparison: Greedy ${criteriaName} (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs LS-${neighborhoodName} (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`
       });
     } catch (error) {
       console.error('Error running comparison:', error);
@@ -153,6 +166,19 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
           max="1000"
           disabled={isRunning}
         />
+      </div>
+
+      <div className="input-group">
+        <label>Local Search Neighborhood Type:</label>
+        <select
+          value={neighborhoodType}
+          onChange={(e) => setNeighborhoodType(e.target.value as 'geometry' | 'rule' | 'overlap')}
+          disabled={isRunning}
+        >
+          <option value="geometry">Geometry-Based (Move rectangles geometrically)</option>
+          <option value="rule">Rule-Based (Modify rectangle permutations)</option>
+          <option value="overlap">Overlap-Based (Allow partial overlaps)</option>
+        </select>
       </div>
 
       <div className="input-group">
