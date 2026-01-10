@@ -54,9 +54,6 @@ export const PackingVisualization: React.FC<PackingVisualizationProps> = ({
           <strong>Summary:</strong> <b>{result.totalBoxes} boxes</b> used for {result.boxes.reduce((total, box) => total + box.rectangles.length, 0)} rectangles
         </div>
         <div className="stat-item">
-          <strong>Boxes Used:</strong> {result.totalBoxes}
-        </div>
-        <div className="stat-item">
           <strong>Utilization:</strong> {result.utilization.toFixed(1)}%
         </div>
         <div className="stat-item">
