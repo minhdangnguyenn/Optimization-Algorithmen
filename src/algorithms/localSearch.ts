@@ -14,6 +14,11 @@ export interface Neighborhood {
  * Geometry-Based Neighborhood
  * Moves rectangles within a box or between boxes, modifying positions geometrically.
  * This operates on valid solutions and modifies coordinates directly.
+ * 
+ * Three equally-likely operations (each ~33%):
+ * 1. Move within box - adjust position of a rectangle in its current box
+ * 2. Move between boxes - transfer a rectangle from one box to another
+ * 3. Swap between boxes - swap rectangles between two different boxes
  */
 export class GeometryBasedNeighborhood implements Neighborhood {
   constructor(private boxSize: number) {}
@@ -21,16 +26,17 @@ export class GeometryBasedNeighborhood implements Neighborhood {
   getNeighbor(currentSolution: PackingResult, rectangles: Rectangle[]): PackingResult {
     const boxes = JSON.parse(JSON.stringify(currentSolution.boxes)) as Box[];
     
+    // Randomly choose one of three operations with equal probability (33% each)
     const operation = Math.random();
     
     if (operation < 0.33) {
-      // Move within box - adjust position
+      // Operation 1: Move within box - adjust position of a rectangle within its current box
       return this.moveWithinBox(boxes, currentSolution);
     } else if (operation < 0.66) {
-      // Move between boxes
+      // Operation 2: Move between boxes - transfer rectangle from one box to another
       return this.moveBetweenBoxes(boxes, currentSolution);
     } else {
-      // Swap rectangles between boxes
+      // Operation 3: Swap between boxes - exchange rectangles between two boxes
       return this.swapBetweenBoxes(boxes, currentSolution);
     }
   }
