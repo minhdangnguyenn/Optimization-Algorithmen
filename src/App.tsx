@@ -44,27 +44,6 @@ function App(): React.ReactElement {
     setNextId(1);
   };
 
-  const handleBoxSizeChange = (value: string): void => {
-    setBoxSizeInput(value);
-    const newSize = parseInt(value);
-    if (!isNaN(newSize) && newSize >= 10 && newSize <= 500) {
-      setBoxSize(newSize);
-      setResult(null); // Clear previous results when box size changes
-    }
-  };
-
-  const handleBoxSizeBlur = (): void => {
-    const newSize = parseInt(boxSizeInput);
-    if (isNaN(newSize) || newSize < 10) {
-      setBoxSizeInput('10');
-      setBoxSize(10);
-    } else if (newSize > 500) {
-      setBoxSizeInput('500');
-      setBoxSize(500);
-    }
-    setResult(null);
-  };
-
   const handleBoxSizeChangeFromInput = (newSize: number): void => {
     setBoxSize(newSize);
     setBoxSizeInput(newSize.toString());
@@ -88,23 +67,6 @@ function App(): React.ReactElement {
           Minimize the number of boxes needed to pack all rectangles.
         </p>
       </div>
-
-      {/* <div className="controls">
-        <h3>Box Configuration</h3>
-        <div className="input-group">
-          <label>Box Size (L × L):</label>
-          <input
-            type="number"
-            value={boxSizeInput}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleBoxSizeChange(e.target.value)}
-            onBlur={handleBoxSizeBlur}
-            min="10"
-            max="500"
-            placeholder="Enter box size"
-          />
-          <span>Current box: {boxSize} × {boxSize} (Area: {boxSize * boxSize})</span>
-        </div>
-      </div> */}
 
       <RectangleInput
         onAddRectangle={addRectangle}
@@ -133,36 +95,6 @@ function App(): React.ReactElement {
         isRunning={isAlgorithmRunning}
       />
 
-      {/* <div className="controls">
-        <h3>Algorithm Information</h3>
-        <div style={{ textAlign: 'left', fontSize: '14px', lineHeight: '1.6' }}>
-          <h4>Greedy Algorithm (First Fit Decreasing):</h4>
-          <ul>
-            <li>Sorts rectangles by selected criteria in descending order:</li>
-            <ul>
-              <li><strong>Area-based:</strong> Sorts by width × height (default)</li>
-              <li><strong>Width-based:</strong> Sorts by width dimension</li>
-              <li><strong>Height-based:</strong> Sorts by height dimension</li>
-            </ul>
-            <li>Places each rectangle in the first box where it fits</li>
-            <li>Creates new boxes when necessary</li>
-            <li>Fast execution but may not find optimal solution</li>
-            <li>Different sorting criteria can lead to different packing results</li>
-          </ul>
-          
-          <h4>Local Search Algorithm:</h4>
-          <ul>
-            <li>Starts with greedy solution as initial state</li>
-            <li>Applies local search operations: swap, rotate, move, consolidate</li>
-            <li>Uses simulated annealing to escape local optima</li>
-            <li>Iteratively improves solution quality</li>
-            <li>Better solutions but longer execution time</li>
-          </ul>
-          
-          <h4>Objective:</h4>
-          <p>Minimize the number of boxes while maximizing space utilization. All rectangles can be rotated 90° if beneficial.</p>
-        </div>
-      </div> */}
     </div>
   );
 }
