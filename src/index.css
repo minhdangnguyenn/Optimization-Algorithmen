@@ -169,9 +169,10 @@ body {
 }
 
 .box {
-  border: 2px solid #333;
-  position: relative;
-  background: #fff;
+    position: relative;
+    background: #fff;
+    border: 2px solid #333;
+    box-sizing: content-box;
 }
 
 .box-title {
@@ -184,7 +185,7 @@ body {
 
 .rectangle {
   position: absolute;
-  border: 1px solid #333;
+  /* border: 1px solid #333; */
   display: flex;
   align-items: center;
   justify-content: center;
