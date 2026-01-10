@@ -479,6 +479,7 @@ export class OverlapNeighborhood implements Neighborhood {
 export class LocalSearchPacker {
   private boxSize: number;
   private neighborhoods: Neighborhood[];
+  private earlyStoppingThreshold: number = 0.2; // Stop if no improvement for 20% of max iterations
   
   constructor(boxSize: number, neighborhoodType: 'geometry' | 'rule' | 'overlap' = 'geometry') {
     this.boxSize = boxSize;
@@ -491,6 +492,14 @@ export class LocalSearchPacker {
     } else if (neighborhoodType === 'overlap') {
       this.neighborhoods.push(new OverlapNeighborhood(boxSize));
     }
+  }
+
+  /**
+   * Set the early stopping threshold
+   * @param threshold Fraction of maxIterations after which to stop if no improvement (e.g., 0.2 = 20%)
+   */
+  setEarlyStoppingThreshold(threshold: number): void {
+    this.earlyStoppingThreshold = Math.max(0.05, Math.min(1, threshold)); // Clamp between 5% and 100%
   }
 
   pack(rectangles: Rectangle[], maxIterations: number = 100): PackingResult {
@@ -541,7 +550,10 @@ export class LocalSearchPacker {
       };
     }
     
-    // Local search iterations
+    // Local search iterations with early stopping
+    let iterationsWithoutImprovement = 0;
+    const maxIterationsWithoutImprovement = Math.max(10, Math.floor(maxIterations * this.earlyStoppingThreshold));
+    
     for (let iteration = 0; iteration < maxIterations; iteration++) {
       const newSolution = this.performLocalSearch(currentSolution, rectangles, iteration, maxIterations);
       
@@ -555,13 +567,21 @@ export class LocalSearchPacker {
           (newSolution.totalBoxes === bestSolution.totalBoxes && newSolution.utilization > bestSolution.utilization)) {
         bestSolution = JSON.parse(JSON.stringify(newSolution));
         currentSolution = newSolution;
+        iterationsWithoutImprovement = 0; // Reset counter on improvement
       } else {
+        iterationsWithoutImprovement++;
+        
         // Accept worse solutions with probability (simulated annealing approach)
         const temperature = 1.0 - (iteration / maxIterations);
         const probability = Math.exp(-(newSolution.totalBoxes - currentSolution.totalBoxes) / Math.max(0.1, temperature));
         if (Math.random() < probability) {
           currentSolution = newSolution;
         }
+      }
+      
+      // Early stopping: if no improvement for many iterations, stop
+      if (iterationsWithoutImprovement > maxIterationsWithoutImprovement && iteration > maxIterations * 0.5) {
+        break;
       }
     }
 
