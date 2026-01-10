@@ -29,7 +29,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
     const newBoxSize = parseInt(instanceBoxSize);
     
     // Validation
-    if (count <= 0 || count > 1000) return;
+    if (count <= 0 || count > 10000) return;
     if (minSide <= 0 || maxSide <= 0) return;
     if (minSide > maxSide) return;
     if (newBoxSize <= 0) return;
@@ -72,7 +72,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
               value={instanceCount}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstanceCount(e.target.value)}
               min="1"
-              max="500"
+              max="10000"
               placeholder="Count"
             />
           </div>
@@ -114,7 +114,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
           className="button secondary" 
           onClick={generateRandomInstance}
           disabled={
-            parseInt(instanceCount) <= 0 || parseInt(instanceCount) > 1000 ||
+            parseInt(instanceCount) <= 0 || parseInt(instanceCount) > 10000 ||
             parseInt(minSideLength) <= 0 || parseInt(maxSideLength) <= 0 ||
             parseInt(minSideLength) > parseInt(maxSideLength) ||
             parseInt(instanceBoxSize) <= 0 ||

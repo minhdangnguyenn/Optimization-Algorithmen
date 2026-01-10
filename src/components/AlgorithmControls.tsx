@@ -17,7 +17,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
   onRunningStateChange
 }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const [maxIterations, setMaxIterations] = useState(100);
+  const [maxIterations, setMaxIterations] = useState(200);
   const [greedyCriteria, setGreedyCriteria] = useState<'area' | 'width' | 'height'>('area');
   const [neighborhoodType, setNeighborhoodType] = useState<'geometry' | 'rule' | 'overlap'>('geometry');
 
@@ -156,7 +156,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
         </select>
       </div>
 
-      <div className="input-group">
+      {/* <div className="input-group">
         <label>Max Iterations (Local Search):</label>
         <input
           type="number"
@@ -166,7 +166,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
           max="1000"
           disabled={isRunning}
         />
-      </div>
+      </div> */}
 
       <div className="input-group">
         <label>Local Search Neighborhood Type:</label>
@@ -198,13 +198,13 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
           {isRunning ? 'Running...' : 'Run Local Search'}
         </button>
         
-        <button 
+        {/* <button 
           className="button" 
           onClick={runComparison}
           disabled={isRunning || rectangles.length === 0}
         >
           {isRunning ? 'Running...' : 'Compare Algorithms'}
-        </button>
+        </button> */}
       </div>
 
       {rectangles.length === 0 && (

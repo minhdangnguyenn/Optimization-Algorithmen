@@ -64,46 +64,46 @@ export const PackingVisualization: React.FC<PackingVisualizationProps> = ({
         </div>
       </div>
 
-      <div className="boxes-container">
-        {result.boxes.map((box: Box, boxIndex: number) => (
-          <div key={box.id} style={{ marginBottom: '20px' }}>
+    <div className="boxes-container" style={{maxHeight: "600px", overflowY: "auto", border: "1px solid #ddd", padding: "10px"}}>
+      {result.boxes.map((box: Box, boxIndex: number) => (
+        <div key={box.id} style={{ marginBottom: '20px' }}>
+        <div
+          className="box"
+          style={{
+            width: `${visualBoxSize}px`,
+            height: `${visualBoxSize}px`,
+            position: 'relative',
+            margin: '10px'
+          }}
+        >
+          <div className="box-title">Box {boxIndex + 1}</div>
+          
+          {box.rectangles.map((rect, rectIndex) => (
             <div
-              className="box"
-              style={{
-                width: `${visualBoxSize}px`,
-                height: `${visualBoxSize}px`,
-                position: 'relative',
-                margin: '10px'
-              }}
+            key={`${rect.id}-${rectIndex}`}
+            className="rectangle"
+            style={{
+              left: `${rect.x * scale}px`,
+              top: `${rect.y * scale}px`,
+              width: `${rect.width * scale}px`,
+              height: `${rect.height * scale}px`,
+              backgroundColor: generateColor(rect.id),
+              fontSize: `${Math.max(8, Math.min(12, scale * 8))}px`
+            }}
             >
-              <div className="box-title">Box {boxIndex + 1}</div>
-              
-              {box.rectangles.map((rect, rectIndex) => (
-                <div
-                  key={`${rect.id}-${rectIndex}`}
-                  className="rectangle"
-                  style={{
-                    left: `${rect.x * scale}px`,
-                    top: `${rect.y * scale}px`,
-                    width: `${rect.width * scale}px`,
-                    height: `${rect.height * scale}px`,
-                    backgroundColor: generateColor(rect.id),
-                    fontSize: `${Math.max(8, Math.min(12, scale * 8))}px`
-                  }}
-                >
-                  {rect.id}
-                  {rect.rotated && '↻'}
-                </div>
-              ))}
+            {rect.id}
+            {rect.rotated && '↻'}
             </div>
-            
-            <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-              Rectangles: {box.rectangles.length} | 
-              Utilization: {((box.rectangles.reduce((sum, r) => sum + r.width * r.height, 0) / (boxSize * boxSize)) * 100).toFixed(1)}%
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+        
+        <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+          Rectangles: {box.rectangles.length} | 
+          Utilization: {((box.rectangles.reduce((sum, r) => sum + r.width * r.height, 0) / (boxSize * boxSize)) * 100).toFixed(1)}%
+        </div>
+        </div>
+      ))}
+    </div>
 
       {result.boxes.length === 0 && (
         <p>No boxes needed - all rectangles might be too large for the box size.</p>
