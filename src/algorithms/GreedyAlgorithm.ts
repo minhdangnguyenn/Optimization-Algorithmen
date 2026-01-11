@@ -70,7 +70,7 @@ export interface SolutionBuilder<T, S> {
 export class GreedyAlgorithm<T, S> {
   constructor(
     private selectionStrategy: SelectionStrategy<T>,
-    private feasibilityChecker: FeasibilityChecker<T, S>,
+    // private feasibilityChecker: FeasibilityChecker<T, S>,
     private solutionBuilder: SolutionBuilder<T, S>
   ) {}
 

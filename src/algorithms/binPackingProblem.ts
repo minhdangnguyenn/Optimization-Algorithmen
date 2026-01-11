@@ -9,7 +9,6 @@ import { Rectangle, PlacedRectangle, Box, PackingResult, Point } from '../types'
 import { 
   GreedyAlgorithm, 
   SelectionStrategy, 
-  FeasibilityChecker, 
   SolutionBuilder, 
   GreedyElement 
 } from './GreedyAlgorithm';
@@ -31,7 +30,7 @@ export class AreaBasedSelection implements SelectionStrategy<Rectangle> {
     
     // Select element with highest value (area)
     return candidates.reduce((best, current) => 
-      current.value > best.value ? current : best
+      current.value > best.value ? current : best // value = area for this criteria
     );
   }
 }
@@ -45,23 +44,8 @@ export class HeightBasedSelection implements SelectionStrategy<Rectangle> {
     
     // Select element with highest height
     return candidates.reduce((best, current) => 
-      current.value > best.value ? current : best
+      current.value > best.value ? current : best // value = height for this criteria
     );
-  }
-}
-
-/**
- * Feasibility Checker: Can rectangle fit in any existing box or new box?
- */
-export class BinPackingFeasibility implements FeasibilityChecker<Rectangle, BinPackingSolution> {
-  isFeasible(currentSolution: BinPackingSolution, rectangle: Rectangle): boolean {
-    // Check if rectangle can fit in box dimensions at all
-    const canFitInBox = (
-      Math.min(rectangle.width, rectangle.height) <= currentSolution.boxSize &&
-      Math.max(rectangle.width, rectangle.height) <= currentSolution.boxSize
-    );
-    
-    return canFitInBox;
   }
 }
 
@@ -224,12 +208,12 @@ export class BinPackingSolver {
     selectionStrategy?: SelectionStrategy<Rectangle>
   ) {
     const strategy = selectionStrategy || new AreaBasedSelection();
-    const feasibilityChecker = new BinPackingFeasibility();
+    // const feasibilityChecker = new BinPackingFeasibility();
     const solutionBuilder = new BinPackingSolutionBuilder(boxSize);
 
     this.algorithm = new GreedyAlgorithm(
       strategy,
-      feasibilityChecker,
+      // feasibilityChecker,
       solutionBuilder
     );
   }
