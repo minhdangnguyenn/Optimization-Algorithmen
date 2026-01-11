@@ -98,7 +98,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     }
   };
 
-  const runComparison = async () => {
+  const runBothAlgorithms = async () => {
     if (rectangles.length === 0) return;
     
     setRunningState(true);
@@ -116,7 +116,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       const greedyResult = greedyPacker.pack(rectangles);
       const localSearchResult = localSearchPacker.pack(rectangles, maxIterations);
       
-      // Show the better result
+      // Show the better result with comparison data
       const betterResult = localSearchResult.totalBoxes < greedyResult.totalBoxes ||
         (localSearchResult.totalBoxes === greedyResult.totalBoxes && localSearchResult.utilization > greedyResult.utilization)
         ? localSearchResult
@@ -130,10 +130,14 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       
       onResult({
         ...betterResult,
-        algorithm: `Comparison: Greedy ${criteriaName} (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs LS-${neighborhoodName} (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`
+        algorithm: `Comparison: Greedy ${criteriaName} (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs LS-${neighborhoodName} (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`,
+        comparisonResult: {
+          greedy: greedyResult,
+          localSearch: localSearchResult
+        }
       });
     } catch (error) {
-      console.error('Error running comparison:', error);
+      console.error('Error running both algorithms:', error);
     } finally {
       setRunningState(false);
     }
@@ -184,27 +188,11 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       <div className="input-group">
         <button 
           className="button" 
-          onClick={runGreedyAlgorithm}
+          onClick={runBothAlgorithms}
           disabled={isRunning || rectangles.length === 0}
         >
-          {isRunning ? 'Running...' : 'Run Greedy Algorithm'}
+          {isRunning ? 'Running...' : 'Run Algorithms'}
         </button>
-        
-        <button 
-          className="button" 
-          onClick={runLocalSearchAlgorithm}
-          disabled={isRunning || rectangles.length === 0}
-        >
-          {isRunning ? 'Running...' : 'Run Local Search'}
-        </button>
-        
-        {/* <button 
-          className="button" 
-          onClick={runComparison}
-          disabled={isRunning || rectangles.length === 0}
-        >
-          {isRunning ? 'Running...' : 'Compare Algorithms'}
-        </button> */}
       </div>
 
       {rectangles.length === 0 && (

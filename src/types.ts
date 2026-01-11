@@ -26,6 +26,10 @@ export interface PackingResult {
   utilization: number;
   algorithm: string;
   executionTime: number;
+  comparisonResult?: {
+    greedy: PackingResult;
+    localSearch: PackingResult;
+  };
 }
 
 export interface Point {
