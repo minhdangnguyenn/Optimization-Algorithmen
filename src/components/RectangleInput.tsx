@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Rectangle } from '../types';
 
 interface RectangleInputProps {
@@ -62,6 +62,8 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
 
   return (
     <div className="controls">
+      <p style={{ marginBottom: '10px' }}>0 &lt; Number of Rectangles &lt;= 1000</p>
+      <p style={{ marginBottom: '10px' }}>0 &lt; Box size length &lt;= 2000</p>
       <div className="input-group">
         <label>Random Instance Generator:</label>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '10px' }}>
@@ -117,7 +119,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
             parseInt(instanceCount) <= 0 || parseInt(instanceCount) > 10000 ||
             parseInt(minSideLength) <= 0 || parseInt(maxSideLength) <= 0 ||
             parseInt(minSideLength) > parseInt(maxSideLength) ||
-            parseInt(instanceBoxSize) <= 0 ||
+            parseInt(instanceBoxSize) <= 0 || parseInt(instanceBoxSize) > 2000  ||
             parseInt(maxSideLength) > parseInt(instanceBoxSize)
           }
         >
