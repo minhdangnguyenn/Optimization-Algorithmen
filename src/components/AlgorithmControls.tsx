@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Rectangle, PackingResult } from '../types';
-import { GreedyPacker, WidthBasedGreedyPacker, HeightBasedGreedyPacker } from '../algorithms/greedyPacking';
+import { GreedyPacker, HeightBasedGreedyPacker } from '../algorithms/greedyPacking';
 import { LocalSearchPacker } from '../algorithms/localSearch';
 
 interface AlgorithmControlsProps {
@@ -18,7 +18,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [maxIterations, setMaxIterations] = useState(200);
-  const [greedyCriteria, setGreedyCriteria] = useState<'area' | 'width' | 'height'>('area');
+  const [greedyCriteria, setGreedyCriteria] = useState<'area' | 'height'>('area');
   const [neighborhoodType, setNeighborhoodType] = useState<'geometry' | 'rule' | 'overlap'>('geometry');
 
   const setRunningState = (running: boolean) => {
@@ -28,8 +28,6 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
 
   const getGreedyPacker = (boxSize: number) => {
     switch (greedyCriteria) {
-      case 'width':
-        return new WidthBasedGreedyPacker(boxSize);
       case 'height':
         return new HeightBasedGreedyPacker(boxSize);
       case 'area':
@@ -54,8 +52,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       const result = packer.pack(rectangles);
       
       // Update algorithm name to include criteria
-      const criteriaName = greedyCriteria === 'area' ? 'Area' : 
-                          greedyCriteria === 'width' ? 'Width' : 'Height';
+      const criteriaName = greedyCriteria === 'area' ? 'Area' : 'Height';
       onResult({
         ...result,
         algorithm: `Greedy First Fit Decreasing (${criteriaName}-based)`
@@ -67,36 +64,36 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     }
   };
 
-  const runLocalSearchAlgorithm = async () => {
-    if (rectangles.length === 0) return;
+//   const runLocalSearchAlgorithm = async () => {
+//     if (rectangles.length === 0) return;
     
-    setRunningState(true);
+//     setRunningState(true);
     
-    // Reset visualization first
-    onResult(null);
+//     // Reset visualization first
+//     onResult(null);
     
-    try {
-      // Add small delay to show loading state and reset
-      await new Promise(resolve => setTimeout(resolve, 200));
+//     try {
+//       // Add small delay to show loading state and reset
+//       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const packer = new LocalSearchPacker(boxSize, neighborhoodType);
-      const result = packer.pack(rectangles, maxIterations);
+//       const packer = new LocalSearchPacker(boxSize, neighborhoodType);
+//       const result = packer.pack(rectangles, maxIterations);
       
-      const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
-                              neighborhoodType === 'rule' ? 'Rule-Based' :
-                              neighborhoodType === 'overlap' ? 'Overlap-Based' :
-                              'Mixed (All)';
+//       const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
+//                               neighborhoodType === 'rule' ? 'Rule-Based' :
+//                               neighborhoodType === 'overlap' ? 'Overlap-Based' :
+//                               'Mixed (All)';
       
-      onResult({
-        ...result,
-        algorithm: `Local Search - ${neighborhoodName} (${result.totalBoxes} boxes, ${result.utilization.toFixed(1)}%)`
-      });
-    } catch (error) {
-      console.error('Error running local search algorithm:', error);
-    } finally {
-      setRunningState(false);
-    }
-  };
+//       onResult({
+//         ...result,
+//         algorithm: `Local Search - ${neighborhoodName} (${result.totalBoxes} boxes, ${result.utilization.toFixed(1)}%)`
+//       });
+//     } catch (error) {
+//       console.error('Error running local search algorithm:', error);
+//     } finally {
+//       setRunningState(false);
+//     }
+//   };
 
   const runBothAlgorithms = async () => {
     if (rectangles.length === 0) return;
@@ -122,8 +119,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
         ? localSearchResult
         : greedyResult;
       
-      const criteriaName = greedyCriteria === 'area' ? 'Area' : 
-                          greedyCriteria === 'width' ? 'Width' : 'Height';
+      const criteriaName = greedyCriteria === 'area' ? 'Area' : "Height";
       const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
                               neighborhoodType === 'rule' ? 'Rule-Based' :
                               'Overlap-Based';
@@ -151,11 +147,11 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
         <label>Greedy Sorting Criteria:</label>
         <select
           value={greedyCriteria}
-          onChange={(e) => setGreedyCriteria(e.target.value as 'area' | 'width' | 'height')}
+          onChange={(e) => setGreedyCriteria(e.target.value as 'area' | 'height')}
           disabled={isRunning}
         >
           <option value="area">Area Descending (Default)</option>
-          <option value="width">Width Descending</option>
+          {/* <option value="width">Width Descending</option> */}
           <option value="height">Height Descending</option>
         </select>
       </div>

@@ -17,9 +17,9 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
   boxSize,
   onBoxSizeChange
 }) => {
-  const [instanceCount, setInstanceCount] = useState<string>('10');
+  const [instanceCount, setInstanceCount] = useState<string>('100');
   const [minSideLength, setMinSideLength] = useState<string>('5');
-  const [maxSideLength, setMaxSideLength] = useState<string>('50');
+  const [maxSideLength, setMaxSideLength] = useState<string>('100');
   const [instanceBoxSize, setInstanceBoxSize] = useState<string>('100');
 
   const generateRandomInstance = () => {

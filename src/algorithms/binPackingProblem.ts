@@ -37,20 +37,6 @@ export class AreaBasedSelection implements SelectionStrategy<Rectangle> {
 }
 
 /**
- * Alternative Selection Strategy: Width-based selection
- */
-export class WidthBasedSelection implements SelectionStrategy<Rectangle> {
-  selectNext(candidates: GreedyElement<Rectangle>[]): GreedyElement<Rectangle> | null {
-    if (candidates.length === 0) return null;
-    
-    // Select element with highest width
-    return candidates.reduce((best, current) => 
-      current.value > best.value ? current : best
-    );
-  }
-}
-
-/**
  * Alternative Selection Strategy: Height-based selection
  */
 export class HeightBasedSelection implements SelectionStrategy<Rectangle> {
