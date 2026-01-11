@@ -7,7 +7,7 @@
 
 import { Rectangle, PlacedRectangle, Box, PackingResult, Point } from '../types';
 import { 
-  GenericGreedyAlgorithm, 
+  GreedyAlgorithm, 
   SelectionStrategy, 
   FeasibilityChecker, 
   SolutionBuilder, 
@@ -217,7 +217,7 @@ export class BinPackingSolutionBuilder implements SolutionBuilder<Rectangle, Bin
  * Bin Packing Solver using Generic Greedy Algorithm
  */
 export class BinPackingSolver {
-  private algorithm: GenericGreedyAlgorithm<Rectangle, BinPackingSolution>;
+  private algorithm: GreedyAlgorithm<Rectangle, BinPackingSolution>;
 
   constructor(
     boxSize: number,
@@ -227,7 +227,7 @@ export class BinPackingSolver {
     const feasibilityChecker = new BinPackingFeasibility();
     const solutionBuilder = new BinPackingSolutionBuilder(boxSize);
 
-    this.algorithm = new GenericGreedyAlgorithm(
+    this.algorithm = new GreedyAlgorithm(
       strategy,
       feasibilityChecker,
       solutionBuilder

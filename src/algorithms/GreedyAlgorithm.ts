@@ -67,7 +67,7 @@ export interface SolutionBuilder<T, S> {
  * This class implements the greedy algorithm pattern without any knowledge
  * of the specific optimization problem it's solving.
  */
-export class GenericGreedyAlgorithm<T, S> {
+export class GreedyAlgorithm<T, S> {
   constructor(
     private selectionStrategy: SelectionStrategy<T>,
     private feasibilityChecker: FeasibilityChecker<T, S>,
