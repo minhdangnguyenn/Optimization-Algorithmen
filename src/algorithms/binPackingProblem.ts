@@ -12,7 +12,7 @@ import {
   FeasibilityChecker, 
   SolutionBuilder, 
   GreedyElement 
-} from './genericGreedy';
+} from './GreedyAlgorithm';
 
 /**
  * Bin Packing Solution representation
@@ -124,10 +124,12 @@ export class BinPackingSolutionBuilder implements SolutionBuilder<Rectangle, Bin
   }
 
   prepareElements(rectangles: Rectangle[]): GreedyElement<Rectangle>[] {
-    return rectangles.map(rect => ({
-      element: rect,
-      value: rect.width * rect.height // Area for default strategy
-    }));
+    return rectangles
+      .map(rect => ({
+        element: rect,
+        value: rect.width * rect.height // Area for default strategy
+      }))
+      .sort((a, b) => b.value - a.value); // Sort by area descending (FFD)
   }
 
   private findBestPosition(box: Box, rect: Rectangle): { x: number; y: number; width: number; height: number; rotated: boolean } | null {

@@ -10,6 +10,8 @@ import {
  *
  * This class maintains the same interface but now delegates to the generic
  * greedy algorithm implementation, demonstrating proper separation of concerns.
+ * 
+ * This class use FFD based on Area by default
  */
 export class GreedyPacker {
   private solver: BinPackingSolver;
