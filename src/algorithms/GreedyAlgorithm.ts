@@ -103,14 +103,8 @@ export class GreedyAlgorithm<T, S> {
       // Remove selected element from candidates
       const index = remainingCandidates.indexOf(selected);
       remainingCandidates.splice(index, 1);
-      
-      // Check feasibility
-      if (this.feasibilityChecker.isFeasible(currentSolution, selected.element)) {
-        // Add to solution
-        currentSolution = this.solutionBuilder.addElement(currentSolution, selected.element);
-        selectedElements.push(selected.element);
-      }
-      // If not feasible, continue with next element
+      currentSolution = this.solutionBuilder.addElement(currentSolution, selected.element);
+      selectedElements.push(selected.element);
     }
     
     const endTime = performance.now();
