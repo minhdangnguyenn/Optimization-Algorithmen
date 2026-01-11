@@ -28,15 +28,15 @@ export interface SelectionStrategy<T> {
   selectNext(candidates: GreedyElement<T>[]): GreedyElement<T> | null;
 }
 
-export interface FeasibilityChecker<T, S> {
-  /**
-   * Checks if adding an element to current solution is feasible
-   * @param currentSolution Current partial solution
-   * @param element Element to be added
-   * @returns true if feasible, false otherwise
-   */
-  isFeasible(currentSolution: S, element: T): boolean;
-}
+// export interface FeasibilityChecker<T, S> {
+//   /**
+//    * Checks if adding an element to current solution is feasible
+//    * @param currentSolution Current partial solution
+//    * @param element Element to be added
+//    * @returns true if feasible, false otherwise
+//    */
+//   isFeasible(currentSolution: S, element: T): boolean;
+// }
 
 export interface SolutionBuilder<T, S> {
   /**

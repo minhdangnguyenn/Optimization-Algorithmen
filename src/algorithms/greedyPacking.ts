@@ -18,7 +18,7 @@ export class GreedyPacker {
 
   constructor(boxSize: number) {
     // Use area-based selection strategy (First Fit Decreasing)
-    this.solver = new BinPackingSolver(boxSize, new AreaBasedSelection());
+    this.solver = new BinPackingSolver(boxSize, new AreaBasedSelection(), 'area');
   }
 
   pack(rectangles: Rectangle[]): PackingResult {
@@ -31,7 +31,7 @@ export class HeightBasedGreedyPacker {
 
   // passing another criteria in constructor, using height based instead of area 
   constructor(boxSize: number) {
-    this.solver = new BinPackingSolver(boxSize, new HeightBasedSelection());
+    this.solver = new BinPackingSolver(boxSize, new HeightBasedSelection(), 'height');
   }
 
   pack(rectangles: Rectangle[]): PackingResult {

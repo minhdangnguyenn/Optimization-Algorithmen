@@ -22,6 +22,11 @@ export interface BinPackingSolution {
 }
 
 /**
+ * Criterion for selecting rectangles
+ */
+export type SelectionCriterion = 'area' | 'height';
+
+/**
  * Selection Strategy: First Fit Decreasing (sort by area)
  */
 export class AreaBasedSelection implements SelectionStrategy<Rectangle> {
@@ -53,7 +58,7 @@ export class HeightBasedSelection implements SelectionStrategy<Rectangle> {
  * Solution Builder: Constructs bin packing solutions
  */
 export class BinPackingSolutionBuilder implements SolutionBuilder<Rectangle, BinPackingSolution> {
-  constructor(private boxSize: number) {}
+  constructor(private boxSize: number, private criterion: SelectionCriterion = 'area') {}
 
   createInitialSolution(): BinPackingSolution {
     return {
@@ -107,13 +112,22 @@ export class BinPackingSolutionBuilder implements SolutionBuilder<Rectangle, Bin
     return currentSolution;
   }
 
+  // Sort the rectangles based on: area or height
   prepareElements(rectangles: Rectangle[]): GreedyElement<Rectangle>[] {
     return rectangles
-      .map(rect => ({
-        element: rect,
-        value: rect.width * rect.height // Area for default strategy
-      }))
-      .sort((a, b) => b.value - a.value); // Sort by area descending (FFD)
+      .map(rect => {
+        let value: number;
+        if (this.criterion === 'height') {
+          value = Math.max(rect.height, rect.width);
+        } else {
+          value = rect.width * rect.height; // Area for default
+        }
+        return {
+          element: rect,
+          value
+        };
+      })
+      .sort((a, b) => b.value - a.value); // Sort by criterion descending
   }
 
   private findBestPosition(box: Box, rect: Rectangle): { x: number; y: number; width: number; height: number; rotated: boolean } | null {
@@ -205,11 +219,12 @@ export class BinPackingSolver {
 
   constructor(
     boxSize: number,
-    selectionStrategy?: SelectionStrategy<Rectangle>
+    selectionStrategy?: SelectionStrategy<Rectangle>,
+    criterion: SelectionCriterion = 'area'
   ) {
     const strategy = selectionStrategy || new AreaBasedSelection();
     // const feasibilityChecker = new BinPackingFeasibility();
-    const solutionBuilder = new BinPackingSolutionBuilder(boxSize);
+    const solutionBuilder = new BinPackingSolutionBuilder(boxSize, criterion);
 
     this.algorithm = new GreedyAlgorithm(
       strategy,
