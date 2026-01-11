@@ -72,7 +72,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
               value={instanceCount}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstanceCount(e.target.value)}
               min="1"
-              max="10000"
+              max="10001"
               placeholder="Count"
             />
           </div>
@@ -94,7 +94,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
               value={minSideLength}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMinSideLength(e.target.value)}
               min="1"
-              max="1000"
+              max="1001"
               placeholder="Min"
             />
           </div>
@@ -105,7 +105,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
               value={maxSideLength}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMaxSideLength(e.target.value)}
               min="1"
-              max="1000"
+              max="1001"
               placeholder="Max"
             />
           </div>
