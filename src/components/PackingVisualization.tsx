@@ -1,5 +1,5 @@
 import { Box, PackingResult } from '../types';
-import React from 'react';
+
 
 interface PackingVisualizationProps {
   result: PackingResult | null;
@@ -27,7 +27,7 @@ const VisualizationPanel: React.FC<{
         fontSize: '14px'
       }}>
         <div><strong>Boxes:</strong> {result.totalBoxes}</div>
-        <div><strong>Utilization:</strong> {result.utilization.toFixed(1)}%</div>
+        <div><strong>Utilization:</strong> {result.utilization.toFixed(2)}%</div>
         <div><strong>Execution Time:</strong> {result.executionTime.toFixed(2)}ms</div>
       </div>
 
@@ -44,8 +44,8 @@ const VisualizationPanel: React.FC<{
                 height: `${visualBoxSize}px`,
                 position: 'relative',
                 margin: '5px',
-                border: '2px solid #353131',
-                background: '#fff'
+                border: '2px solid black',
+                background: 'white'
               }}
             >
               {box.rectangles.map((rect, rectIndex) => (
@@ -65,7 +65,7 @@ const VisualizationPanel: React.FC<{
                     color: '#eae3e3',
                     fontWeight: 'bold',
                     flexDirection: 'column',
-                    border: "1px solid #060606",
+                    border: "1px solid black",
                     gap: '2px'
                   }}
                 >

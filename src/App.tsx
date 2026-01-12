@@ -7,7 +7,7 @@ import { PackingVisualization } from './components/PackingVisualization';
 
 function App(): React.ReactElement {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-  const [boxSize, setBoxSize] = useState<number>(100);
+  const [boxSize, setBoxSize] = useState<number>(200);
   const [boxSizeInput, setBoxSizeInput] = useState<string>('100');
   const [result, setResult] = useState<PackingResult | null>(null);
   const [nextId, setNextId] = useState<number>(1);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Rectangle, PackingResult } from '../types';
 import { GreedyPacker, HeightBasedGreedyPacker } from '../algorithms/greedy/greedyPacking';
-import { LocalSearchPacker } from '../algorithms/localSearch';
+import { LocalSearchPacker } from '../algorithms/localSearch/localSearch';
 
 interface AlgorithmControlsProps {
   rectangles: Rectangle[];

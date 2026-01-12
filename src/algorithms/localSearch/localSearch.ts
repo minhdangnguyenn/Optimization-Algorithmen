@@ -1,4 +1,4 @@
-import { Rectangle, PlacedRectangle, Box, PackingResult } from '../types';
+import { Rectangle, PlacedRectangle, Box, PackingResult } from '../../types';
 
 /**
  * Neighborhood interface for local search
