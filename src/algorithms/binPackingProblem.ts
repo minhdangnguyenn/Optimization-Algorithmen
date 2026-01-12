@@ -11,7 +11,7 @@ import {
   SelectionStrategy, 
   SolutionBuilder, 
   GreedyElement 
-} from './GreedyAlgorithm';
+} from './greedy/GreedyAlgorithm';
 
 /**
  * Bin Packing Solution representation

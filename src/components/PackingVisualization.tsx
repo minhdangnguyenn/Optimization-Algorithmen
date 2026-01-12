@@ -12,17 +12,8 @@ const VisualizationPanel: React.FC<{
   boxSize: number;
   title: string;
 }> = ({ result, boxSize, title }) => {
-  const scale = Math.min(300 / boxSize, 2);
+  const scale = Math.min(1000 / boxSize, 2);
   const visualBoxSize = boxSize * scale;
-
-  const generateColor = (id: number): string => {
-    const colors = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-      '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-      '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
-    ];
-    return colors[id % colors.length];
-  };
 
   return (
     <div style={{ flex: 1, borderRight: '2px solid #ddd', paddingRight: '20px' }}>
@@ -66,8 +57,7 @@ const VisualizationPanel: React.FC<{
                     top: `${rect.y * scale}px`,
                     width: `${rect.width * scale}px`,
                     height: `${rect.height * scale}px`,
-                    backgroundColor: generateColor(rect.id),
-                    fontSize: `${Math.max(7, Math.min(10, scale * 8))}px`,
+                    backgroundColor: rect.rotated ? 'red' : '#240defdc',
                     position: 'absolute',
                     display: 'flex',
                     alignItems: 'center',
@@ -79,16 +69,17 @@ const VisualizationPanel: React.FC<{
                     gap: '2px'
                   }}
                 >
-                  <div>R{rect.id}{rect.rotated && '↻'}</div>
-                  <div style={{ fontSize: '0.8em', opacity: 0.9 }}>
+                  <div>R{rect.id}</div>
+                  <div>
                     {rect.width}×{rect.height}
                   </div>
                 </div>
               ))}
             </div>
             
-            <div style={{ fontSize: '11px', color: '#666', marginTop: '5px' }}>
-              Items: {box.rectangles.length} | Util: {((box.rectangles.reduce((sum, r) => sum + r.width * r.height, 0) / (boxSize * boxSize)) * 100).toFixed(1)}%
+            <div style={{ fontSize: '15px'}}>
+              <p>Number of rectangles: {box.rectangles.length}</p>
+              <p>Util: {((box.rectangles.reduce((sum, r) => sum + r.width * r.height, 0) / (boxSize * boxSize)) * 100).toFixed(2)}%</p>
             </div>
           </div>
         ))}
@@ -168,15 +159,6 @@ export const PackingVisualization: React.FC<PackingVisualizationProps> = ({
   const scale = Math.min(300 / boxSize, 2);
   const visualBoxSize = boxSize * scale;
 
-  const generateColor = (id: number): string => {
-    const colors = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-      '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-      '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
-    ];
-    return colors[id % colors.length];
-  };
-
   return (
     <div className="visualization">
       <h3>Packing Visualization</h3>
@@ -218,12 +200,12 @@ export const PackingVisualization: React.FC<PackingVisualizationProps> = ({
                     top: `${rect.y * scale}px`,
                     width: `${rect.width * scale}px`,
                     height: `${rect.height * scale}px`,
-                    backgroundColor: generateColor(rect.id),
+                    backgroundColor:"#0f38ee",
                     fontSize: `${Math.max(8, Math.min(12, scale * 8))}px`
                   }}
                 >
                   {rect.id}
-                  {rect.rotated && '↻'}
+                  {rect.rotated}
                 </div>
               ))}
             </div>

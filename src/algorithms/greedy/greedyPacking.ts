@@ -1,9 +1,9 @@
-import { Rectangle, PackingResult } from "../types";
+import { Rectangle, PackingResult } from "../../types";
 import {
   BinPackingSolver,
   AreaBasedSelection,
   HeightBasedSelection,
-} from "./binPackingProblem";
+} from "../binPackingProblem";
 
 /**
  * Legacy GreedyPacker class - now uses generic algorithm implementation

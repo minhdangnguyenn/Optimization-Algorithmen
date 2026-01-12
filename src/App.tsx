@@ -77,17 +77,19 @@ function App(): React.ReactElement {
         onBoxSizeChange={handleBoxSizeChangeFromInput}
       />
 
-      <RectangleList
-        rectangles={rectangles}
-        onRemoveRectangle={removeRectangle}
-      />
+      <div className="controls-wrapper">
+        <RectangleList
+          rectangles={rectangles}
+          onRemoveRectangle={removeRectangle}
+        />
 
-      <AlgorithmControls
-        rectangles={rectangles}
-        boxSize={boxSize}
-        onResult={handleResult}
-        onRunningStateChange={handleRunningStateChange}
-      />
+        <AlgorithmControls
+          rectangles={rectangles}
+          boxSize={boxSize}
+          onResult={handleResult}
+          onRunningStateChange={handleRunningStateChange}
+        />
+      </div>
 
       <PackingVisualization
         result={result}
