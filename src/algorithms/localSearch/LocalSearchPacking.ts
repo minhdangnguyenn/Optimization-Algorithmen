@@ -1,12 +1,12 @@
 import { Box, PackingResult, PlacedRectangle, Rectangle } from "../../types";
-import { Neighborhood } from "../../types";
+import { Neighborhood } from "./LocalSearchAlgorithm";
 import { GeometryBasedNeighborhood } from "./neighborhood/GeometryBasedNeighborhood";
 import { OverlapNeighborhood } from "./neighborhood/OverlappedNeigborhood";
 import { RuleBasedNeighborhood } from "./neighborhood/RuleBasedNeighborhood";
 
 export class LocalSearchPacker {
   private boxSize: number;
-  private neighborhoods: Neighborhood[];
+  private neighborhoods: Neighborhood<PackingResult>[];
   private earlyStoppingThreshold: number = 0.2; // Stop if no improvement for 20% of max iterations
   
   constructor(boxSize: number, neighborhoodType: 'geometry' | 'rule' | 'overlap' = 'geometry') {
@@ -224,15 +224,22 @@ export class LocalSearchPacker {
       return solution;
     }
 
+    // Set rectangles in neighborhoods before using them
+    for (const neighborhood of this.neighborhoods) {
+      if ('setRectangles' in neighborhood) {
+        (neighborhood as any).setRectangles(rectangles);
+      }
+    }
+
     // Update overlap neighborhood iteration
     const overlapNeighborhood = this.neighborhoods.find(n => n instanceof OverlapNeighborhood) as OverlapNeighborhood;
-    if (overlapNeighborhood) {
+    if (overlapNeighborhood && 'setIteration' in overlapNeighborhood) {
       overlapNeighborhood.setIteration(iteration);
     }
 
     // Randomly select a neighborhood
     const neighborhood = this.neighborhoods[Math.floor(Math.random() * this.neighborhoods.length)];
-    return neighborhood.getNeighbor(solution, rectangles);
+    return neighborhood.getNeighbor(solution);
   }
 }
 
