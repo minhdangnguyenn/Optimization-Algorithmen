@@ -63,7 +63,7 @@ export interface LocalSearchResult<S> {
  * @template T - Element type (input data)
  * @template S - Solution type
  */
-export class GenericLocalSearchAlgorithm<T, S> {
+export class LocalSearchAlgorithm<T, S> {
   constructor(
     private neighborhood: Neighborhood<S>,
     private objectiveFunction: ObjectiveFunction<S>,

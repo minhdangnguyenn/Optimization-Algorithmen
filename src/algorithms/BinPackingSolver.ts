@@ -12,7 +12,7 @@ import {
 } from './greedy/GreedyAlgorithm';
 import { AreaBasedSelection, HeightBasedSelection } from './greedy/Strategy';
 import {
-  GenericLocalSearchAlgorithm,
+  LocalSearchAlgorithm,
   Neighborhood,
   ObjectiveFunction,
   InitialSolutionGenerator,
@@ -632,7 +632,7 @@ export class BinPackingSolver {
  * Bin Packing Local Search Solver using Generic Local Search Algorithm
  */
 export class BinPackingLocalSearchSolver {
-  private algorithm: GenericLocalSearchAlgorithm<Rectangle, PackingResult>;
+  private algorithm: LocalSearchAlgorithm<Rectangle, PackingResult>;
 
   constructor(
     boxSize: number,
@@ -654,7 +654,7 @@ export class BinPackingLocalSearchSolver {
     const acceptance = new SimulatedAnnealingAcceptance<PackingResult>();
     const initialSolution = new BinPackingInitialSolution(boxSize);
     
-    this.algorithm = new GenericLocalSearchAlgorithm(
+    this.algorithm = new LocalSearchAlgorithm(
       neighborhood,
       objective,
       acceptance,
