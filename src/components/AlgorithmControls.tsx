@@ -18,7 +18,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
   onRunningStateChange
 }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const [maxIterations, setMaxIterations] = useState(200);
+  const [maxIterations, setMaxIterations] = useState(10000);
   const [greedyCriteria, setGreedyCriteria] = useState<'area' | 'height'>('area');
   const [neighborhoodType, setNeighborhoodType] = useState<'geometry' | 'rule' | 'overlap'>('geometry');
 

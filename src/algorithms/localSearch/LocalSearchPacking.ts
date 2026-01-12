@@ -1,5 +1,5 @@
 import { Box, PackingResult, PlacedRectangle, Rectangle } from "../../types";
-import { Neighborhood } from "./LocalSearchAlgorithm";
+import { Neighborhood } from "./LocalSearch";
 import { GeometryBasedNeighborhood } from "./neighborhood/GeometryBasedNeighborhood";
 import { OverlapNeighborhood } from "./neighborhood/OverlappedNeigborhood";
 import { RuleBasedNeighborhood } from "./neighborhood/RuleBasedNeighborhood";
@@ -21,14 +21,6 @@ export class LocalSearchPacker {
       this.neighborhoods.push(new OverlapNeighborhood(boxSize));
     }
   }
-
-  /**
-   * Set the early stopping threshold
-   * @param threshold Fraction of maxIterations after which to stop if no improvement (e.g., 0.2 = 20%)
-   */
-//   setEarlyStoppingThreshold(threshold: number): void {
-//     this.earlyStoppingThreshold = Math.max(0.05, Math.min(1, threshold)); // Clamp between 5% and 100%
-//   }
 
   pack(rectangles: Rectangle[], maxIterations: number = 100): PackingResult {
     const startTime = performance.now();
