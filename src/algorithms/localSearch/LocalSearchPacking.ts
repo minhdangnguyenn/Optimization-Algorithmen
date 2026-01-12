@@ -235,5 +235,6 @@ export class LocalSearchPacker {
     return neighborhood.getNeighbor(solution, rectangles);
   }
 }
+
 export { GeometryBasedNeighborhood };
 
