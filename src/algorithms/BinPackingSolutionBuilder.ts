@@ -1,5 +1,5 @@
 import { Box, PlacedRectangle, Point, Rectangle } from "../types";
-import { BinPackingSolution, GreedySelectionCriterion } from "./BinPackingSolver";
+import { BinPackingSolution, GreedySelectionCriterion } from "./GreedyBinPackingSolver";
 import { GreedyElement, SolutionBuilder } from "./greedy/GreedyAlgorithm";
 
 /**

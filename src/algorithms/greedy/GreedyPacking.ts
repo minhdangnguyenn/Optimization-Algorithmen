@@ -1,8 +1,8 @@
 import { Rectangle, PackingResult } from "../../types";
 import {
-  BinPackingSolver,
+  GreedyBinPackingSolver,
   GreedySelectionCriterion,
-} from "../BinPackingSolver";
+} from "../GreedyBinPackingSolver";
 
 
 /**
@@ -14,11 +14,11 @@ import {
  * This class use FFD based on Area by default
  */
 export class GreedyPacker {
-  private solver: BinPackingSolver;
+  private solver: GreedyBinPackingSolver;
 
   constructor(boxSize: number, criteria: GreedySelectionCriterion) {
     // Use area-based selection strategy (First Fit Decreasing)
-    this.solver = new BinPackingSolver(boxSize, criteria);
+    this.solver = new GreedyBinPackingSolver(boxSize, criteria);
   }
 
   pack(rectangles: Rectangle[]): PackingResult {
@@ -27,11 +27,11 @@ export class GreedyPacker {
 }
 
 export class HeightBasedGreedyPacker {
-  private solver: BinPackingSolver;
+  private solver: GreedyBinPackingSolver;
 
   // passing another criteria in constructor, using height based instead of area 
   constructor(boxSize: number) {
-    this.solver = new BinPackingSolver(boxSize, "height");
+    this.solver = new GreedyBinPackingSolver(boxSize, "height");
   }
 
   pack(rectangles: Rectangle[]): PackingResult {

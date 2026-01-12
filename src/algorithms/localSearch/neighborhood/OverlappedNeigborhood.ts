@@ -1,21 +1,26 @@
 import { Box, PackingResult, PlacedRectangle, Rectangle } from "../../../types";
-import { Neighborhood } from "../../../types";
+import { Neighborhood } from "../LocalSearchAlgorithm";
 
 /**
  * Overlap Neighborhood
 * Allows partial overlaps initially, gradually tightening the constraint
  */
-export class OverlapNeighborhood implements Neighborhood {
+export class OverlapNeighborhood implements Neighborhood<PackingResult> {
   private overlapPercentage: number = 100; // Start at 100%
+  private rectangles: Rectangle[] = [];
 
   constructor(private boxSize: number, private maxIterations: number = 100) {}
+
+  setRectangles(rectangles: Rectangle[]): void {
+    this.rectangles = rectangles;
+  }
 
   setIteration(iteration: number): void {
     // Gradually reduce overlap percentage from 100 to 0
     this.overlapPercentage = Math.max(0, 100 * (1 - iteration / this.maxIterations));
   }
 
-  getNeighbor(currentSolution: PackingResult, rectangles: Rectangle[]): PackingResult {
+  getNeighbor(currentSolution: PackingResult): PackingResult {
     const boxes = JSON.parse(JSON.stringify(currentSolution.boxes)) as Box[];
 
     if (boxes.length === 0 || boxes.every(b => b.rectangles.length === 0)) {

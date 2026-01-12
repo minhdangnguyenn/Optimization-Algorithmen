@@ -1,30 +1,35 @@
 import { Box, PackingResult, Rectangle } from "../../../types";
-import { Neighborhood } from "../../../types";
+import { Neighborhood } from "../LocalSearchAlgorithm";
 
 /**
  * Rule-Based Neighborhood
  * Works on permutations of rectangles using the same principle as the greedy algorithm.
  * Modifies the order/permutation of rectangles and re-packs using greedy placement.
  */
-export class RuleBasedNeighborhood implements Neighborhood {
+export class RuleBasedNeighborhood implements Neighborhood<PackingResult> {
   private lastPermutation: number[] = []; // IDs of rectangles in current order
+  private rectangles: Rectangle[] = [];
 
   constructor(private boxSize: number) {}
 
-  getNeighbor(currentSolution: PackingResult, rectangles: Rectangle[]): PackingResult {
+  setRectangles(rectangles: Rectangle[]): void {
+    this.rectangles = rectangles;
+  }
+
+  getNeighbor(currentSolution: PackingResult): PackingResult {
     // Extract current rectangle order from solution
     let currentPermutation = this.extractPermutation(currentSolution);
     
     // If first time, initialize from rectangles array
     if (currentPermutation.length === 0) {
-      currentPermutation = rectangles.map((_, i) => i);
+      currentPermutation = this.rectangles.map((_, i) => i);
     }
 
     // Apply small modification to permutation - move rectangles from sparse boxes earlier
     const newPermutation = this.modifyPermutation(currentPermutation, currentSolution);
     
     // Rebuild solution by placing rectangles in new order
-    return this.rebuildFromPermutation(newPermutation, rectangles);
+    return this.rebuildFromPermutation(newPermutation, this.rectangles);
   }
 
   private extractPermutation(solution: PackingResult): number[] {

@@ -1,5 +1,5 @@
 import { Box, PackingResult, PlacedRectangle, Rectangle } from "../../../types";
-import { Neighborhood } from "../../../types";
+import { Neighborhood } from "../LocalSearchAlgorithm";
 
 /**
  * Geometry-Based Neighborhood
@@ -11,10 +11,16 @@ import { Neighborhood } from "../../../types";
  * 2. Move between boxes - transfer a rectangle from one box to another
  * 3. Swap between boxes - swap rectangles between two different boxes
  */
-export class GeometryBasedNeighborhood implements Neighborhood {
+export class GeometryBasedNeighborhood implements Neighborhood<PackingResult> {
+  private rectangles: Rectangle[] = [];
+
   constructor(private boxSize: number) {}
 
-  getNeighbor(currentSolution: PackingResult, rectangles: Rectangle[]): PackingResult {
+  setRectangles(rectangles: Rectangle[]): void {
+    this.rectangles = rectangles;
+  }
+
+  getNeighbor(currentSolution: PackingResult): PackingResult {
     const boxes = JSON.parse(JSON.stringify(currentSolution.boxes)) as Box[];
     
     // Randomly choose one of three operations with equal probability (33% each)
