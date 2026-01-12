@@ -17,7 +17,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
   boxSize,
   onBoxSizeChange
 }) => {
-  const [instanceCount, setInstanceCount] = useState<string>('100');
+  const [instanceCount, setInstanceCount] = useState<string>('1000');
   const [minSideLength, setMinSideLength] = useState<string>('5');
   const [maxSideLength, setMaxSideLength] = useState<string>('100');
   const [instanceBoxSize, setInstanceBoxSize] = useState<string>('100');
@@ -90,7 +90,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
             />
           </div>
           <div>
-            <label>Min side length:</label>
+            <label>Min rectangle side length:</label>
             <input
               type="number"
               value={minSideLength}
@@ -101,7 +101,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
             />
           </div>
           <div>
-            <label>Max side length:</label>
+            <label>Max rectangle side length:</label>
             <input
               type="number"
               value={maxSideLength}

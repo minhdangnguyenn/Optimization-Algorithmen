@@ -20,7 +20,7 @@ const VisualizationPanel: React.FC<{
       <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>{title}</h4>
       
       <div style={{ 
-        background: '#f5f5f5', 
+        background: '#ffffff', 
         padding: '10px', 
         borderRadius: '4px', 
         marginBottom: '10px',
