@@ -10,7 +10,7 @@
 
 export interface GreedyElement<T> {
   element: T;
-  value: number; // For selection strategy comparison
+  value: number; // For selection strategy comparison, value can be area or height, based on the selection strategy
 }
 
 export interface GreedyResult<T, S> {

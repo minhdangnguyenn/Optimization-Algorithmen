@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Rectangle, PackingResult } from '../types';
-import { GreedyPacker, HeightBasedGreedyPacker } from '../algorithms/greedy/greedyPacking';
+import { GreedyPacker } from '../algorithms/greedy/GreedyPacking';
 import { LocalSearchPacker } from '../algorithms/localSearch/localSearch';
 
 interface AlgorithmControlsProps {
@@ -27,13 +27,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
   };
 
   const getGreedyPacker = (boxSize: number) => {
-    switch (greedyCriteria) {
-      case 'height':
-        return new HeightBasedGreedyPacker(boxSize);
-      case 'area':
-      default:
-        return new GreedyPacker(boxSize);
-    }
+    return new GreedyPacker(boxSize, greedyCriteria);
   };
 
   const runBothAlgorithms = async () => {
