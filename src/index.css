@@ -46,18 +46,19 @@ body {
   margin-bottom: 20px;
 }
 
-.input-group {
+/* .input-group {
   display: flex;
   gap: 15px;
   align-items: center;
   margin-bottom: 15px;
   flex-wrap: wrap;
-}
+} */
 
 .input-group label {
   font-weight: 500;
   color: #333;
   min-width: 120px;
+  margin: 5px;
 }
 
 .input-group input {
@@ -81,6 +82,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
+  margin: 5px
 }
 
 .button:hover {
@@ -94,6 +96,7 @@ body {
 
 .button.secondary {
   background: #6c757d;
+  margin: 5px;
 }
 
 .button.secondary:hover {
