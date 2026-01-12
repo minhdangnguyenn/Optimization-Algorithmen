@@ -36,3 +36,13 @@ export interface Point {
   x: number;
   y: number;
 }
+
+/**
+ * Neighborhood interface for local search
+ */
+export interface Neighborhood {
+  /**
+   * Generates a neighbor solution from the current solution
+   */
+  getNeighbor(currentSolution: PackingResult, rectangles: Rectangle[]): PackingResult;
+}
