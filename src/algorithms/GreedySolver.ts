@@ -6,7 +6,7 @@
  */
 
 import { Rectangle, Box, PackingResult } from '../types';
-import { BinPackingSolutionBuilder } from './BinPackingSolutionBuilder';
+import { GreedySolutionBuilder } from './greedy/GreedySolutionBuilder';
 import { GreedyAlgorithm } from './greedy/GreedyAlgorithm';
 import { AreaBasedSelection, HeightBasedSelection } from './greedy/Strategy';
 import {
@@ -171,7 +171,7 @@ export class GreedyBinPackingSolver {
     } else {
         throw new Error(`Unknown criterion: ${criterion}`);
     }
-    const solutionBuilder = new BinPackingSolutionBuilder(boxSize, criterion);
+    const solutionBuilder = new GreedySolutionBuilder(boxSize, criterion);
 
     this.algorithm = new GreedyAlgorithm(
       strategy,

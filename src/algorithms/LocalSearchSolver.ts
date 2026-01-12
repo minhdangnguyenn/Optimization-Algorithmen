@@ -10,7 +10,7 @@ import { Neighborhood } from "./localSearch/LocalSearchAlgorithm";
 import { GeometryBasedNeighborhood } from "./localSearch/neighborhood/GeometryBasedNeighborhood";
 import { OverlapNeighborhood } from "./localSearch/neighborhood/OverlappedNeigborhood";
 import { RuleBasedNeighborhood } from "./localSearch/neighborhood/RuleBasedNeighborhood";
-import { BinPackingObjective, BinPackingInitialSolution } from "./GreedyBinPackingSolver";
+import { BinPackingObjective, BinPackingInitialSolution } from "./GreedySolver";
 
 export type LocalSearchCriterion = "geometry" | "rule" | "overlap";
 /**

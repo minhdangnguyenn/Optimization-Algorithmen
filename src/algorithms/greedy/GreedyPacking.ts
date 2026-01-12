@@ -2,7 +2,7 @@ import { Rectangle, PackingResult } from "../../types";
 import {
   GreedyBinPackingSolver,
   GreedySelectionCriterion,
-} from "../GreedyBinPackingSolver";
+} from "../GreedySolver";
 
 
 /**

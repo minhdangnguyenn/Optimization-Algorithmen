@@ -1,11 +1,11 @@
-import { Box, PlacedRectangle, Point, Rectangle } from "../types";
-import { BinPackingSolution, GreedySelectionCriterion } from "./GreedyBinPackingSolver";
-import { GreedyElement, SolutionBuilder } from "./greedy/GreedyAlgorithm";
+import { Box, PlacedRectangle, Point, Rectangle } from "../../types";
+import { BinPackingSolution, GreedySelectionCriterion } from "../GreedySolver";
+import { GreedyElement, SolutionBuilder } from "./GreedyAlgorithm";
 
 /**
  * Solution Builder: Constructs bin packing solutions
  */
-export class BinPackingSolutionBuilder implements SolutionBuilder<Rectangle, BinPackingSolution> {
+export class GreedySolutionBuilder implements SolutionBuilder<Rectangle, BinPackingSolution> {
   constructor(private boxSize: number, private criterion: GreedySelectionCriterion = 'area') {}
 
   createInitialSolution(): BinPackingSolution {
