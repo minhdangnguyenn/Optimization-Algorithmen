@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Rectangle, PackingResult } from './types';
+import { PackingResult } from './types';
+import { Rectangle } from './algorithm/rectangle';
 import { RectangleInput } from './components/RectangleInput';
 import { RectangleList } from './components/RectangleList';
 import { AlgorithmControls } from './components/AlgorithmControls';
@@ -10,38 +11,28 @@ function App(): React.ReactElement {
   const [boxSize, setBoxSize] = useState<number>(200);
   const [boxSizeInput, setBoxSizeInput] = useState<string>('100');
   const [result, setResult] = useState<PackingResult | null>(null);
-  const [nextId, setNextId] = useState<number>(1);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState<boolean>(false);
 
-  const addRectangle = (rectData: Omit<Rectangle, 'id'>): void => {
-    const newRectangle: Rectangle = {
-      ...rectData,
-      id: nextId
-    };
+  const addRectangle = (width: number, height: number): void => {
+    const newRectangle = new Rectangle(width, height);
     setRectangles((prev: Rectangle[]) => [...prev, newRectangle]);
-    setNextId((prev: number) => prev + 1);
     setResult(null); // Clear previous results
   };
 
-  const addMultipleRectangles = (rectangleDataArray: Omit<Rectangle, 'id'>[]): void => {
-    const newRectangles: Rectangle[] = rectangleDataArray.map((rectData, index) => ({
-      ...rectData,
-      id: nextId + index
-    }));
+  const addMultipleRectangles = (rectangleData: Array<{width: number, height: number}>): void => {
+    const newRectangles: Rectangle[] = rectangleData.map(data => new Rectangle(data.width, data.height));
     setRectangles((prev: Rectangle[]) => [...prev, ...newRectangles]);
-    setNextId((prev: number) => prev + rectangleDataArray.length);
     setResult(null); // Clear previous results
   };
 
-  const removeRectangle = (id: number): void => {
-    setRectangles((prev: Rectangle[]) => prev.filter((rect: Rectangle) => rect.id !== id));
+  const removeRectangle = (index: number): void => {
+    setRectangles((prev: Rectangle[]) => prev.filter((_, i) => i !== index));
     setResult(null); // Clear previous results
   };
 
   const clearRectangles = (): void => {
     setRectangles([]);
     setResult(null);
-    setNextId(1);
   };
 
   const handleBoxSizeChangeFromInput = (newSize: number): void => {

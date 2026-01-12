@@ -33,3 +33,4 @@ bin/
 
 node_modules/
 .vite/
+temp/

@@ -1,14 +1,29 @@
 import React, { useState } from 'react';
-import { Rectangle, PackingResult } from '../types';
-import { GreedyPacker } from '../algorithms/greedy/GreedyPacking';
-import { LocalSearchPacker } from '../algorithms/localSearch/LocalSearchPacking';
-
+import { PackingResult } from '../types';
+import { GreedySolver, OrderingStrategy } from '../algorithm/greedy';
+import { Rectangle } from '../algorithm/rectangle';
+import { PackingSolution } from '../algorithm/solution';
+import { FirstFitPlacer } from '../algorithm/greedy/strategy';
+import { BottomLeftPutting } from '../algorithm/greedy/putting';
 
 interface AlgorithmControlsProps {
   rectangles: Rectangle[];
   boxSize: number;
   onResult: (result: PackingResult | null) => void;
   onRunningStateChange: (isRunning: boolean) => void;
+}
+
+// Ordering strategies
+class AreaDescendingStrategy implements OrderingStrategy<Rectangle> {
+  order(elements: readonly Rectangle[]): readonly Rectangle[] {
+    return [...elements].sort((a, b) => b.area - a.area);
+  }
+}
+
+class HeightDescendingStrategy implements OrderingStrategy<Rectangle> {
+  order(elements: readonly Rectangle[]): readonly Rectangle[] {
+    return [...elements].sort((a, b) => b.height - a.height);
+  }
 }
 
 export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
@@ -18,53 +33,69 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
   onRunningStateChange
 }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const [maxIterations, setMaxIterations] = useState(10000);
-  const [greedyCriteria, setGreedyCriteria] = useState<'area' | 'height'>('area');
-  const [neighborhoodType, setNeighborhoodType] = useState<'geometry' | 'rule' | 'overlap'>('geometry');
+  const [sortingCriteria, setSortingCriteria] = useState<'area' | 'height'>('area');
 
   const setRunningState = (running: boolean) => {
     setIsRunning(running);
     onRunningStateChange(running);
   };
 
-  const runBothAlgorithms = async () => {
+  const convertSolutionToResult = (solution: PackingSolution, algorithmName: string, executionTime: number): PackingResult => {
+    const totalArea = rectangles.reduce((sum, r) => sum + r.area, 0);
+    const usedArea = solution.boxes.reduce((sum, box) => 
+      sum + box.rectangles.reduce((boxSum, rect) => boxSum + rect.area, 0), 0
+    );
+    const totalBoxArea = solution.boxes.length * boxSize * boxSize;
+    const utilization = totalBoxArea > 0 ? (usedArea / totalBoxArea) * 100 : 0;
+
+    return {
+      boxes: solution.boxes,
+      totalBoxes: solution.boxes.length,
+      utilization,
+      algorithm: algorithmName,
+      executionTime
+    };
+  };
+
+  const runAlgorithm = async () => {
     if (rectangles.length === 0) return;
     
     setRunningState(true);
-    
-    // Reset visualization first
     onResult(null);
     
     try {
-      // Add small delay to show loading state and reset
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      const greedyPacker = new GreedyPacker(boxSize, greedyCriteria);
-      const localSearchPacker = new LocalSearchPacker(boxSize, neighborhoodType);
+      const startTime = performance.now();
       
-      const greedyResult = greedyPacker.pack(rectangles);
-      const localSearchResult = localSearchPacker.pack(rectangles, maxIterations);
+      // Use rectangles directly - they are already Rectangle class instances
+      const orderingStrategy = sortingCriteria === 'area' 
+        ? new AreaDescendingStrategy() 
+        : new HeightDescendingStrategy();
       
-      // Show the better result with comparison data
-      const betterResult = localSearchResult.totalBoxes < greedyResult.totalBoxes ||
-        (localSearchResult.totalBoxes === greedyResult.totalBoxes && localSearchResult.utilization > greedyResult.utilization)
-        ? localSearchResult
-        : greedyResult;
+      // Create putting strategy and placer
+      const puttingStrategy = new BottomLeftPutting();
+      const placer = new FirstFitPlacer(boxSize, puttingStrategy);
       
-      const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
-                              neighborhoodType === 'rule' ? 'Rule-Based' :
-                              'Overlap-Based';
+      // Create solver
+      const solver = new GreedySolver(orderingStrategy, placer);
       
-      onResult({
-        ...betterResult,
-        algorithm: `Comparison: Greedy ${greedyCriteria} (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs LS-${neighborhoodName} (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`,
-        comparisonResult: {
-          greedy: greedyResult,
-          localSearch: localSearchResult
-        }
-      });
+      // Solve
+      const initialSolution = new PackingSolution(boxSize);
+      const solution = solver.solve(initialSolution, rectangles);
+      
+      const endTime = performance.now();
+      const executionTime = endTime - startTime;
+      
+      const result = convertSolutionToResult(
+        solution,
+        `Greedy FFD (${sortingCriteria === 'area' ? 'Area' : 'Height'} Descending)`,
+        executionTime
+      );
+      
+      onResult(result);
     } catch (error) {
-      console.error('Error running both algorithms:', error);
+      console.error('Error running algorithm:', error);
     } finally {
       setRunningState(false);
     }
@@ -75,43 +106,30 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       <h3>Algorithm Controls</h3>
       
       <div className="input-group">
-        <label>Greedy Sorting Criteria:</label>
+        <label>Sorting Criteria:</label>
         <select
-          value={greedyCriteria}
-          onChange={(e) => setGreedyCriteria(e.target.value as 'area' | 'height')}
+          value={sortingCriteria}
+          onChange={(e) => setSortingCriteria(e.target.value as 'area' | 'height')}
           disabled={isRunning}
         >
-          <option value="area">Area Descending (Default)</option>
+          <option value="area">Area Descending</option>
           <option value="height">Height Descending</option>
-        </select>
-      </div>
-
-      <div className="input-group">
-        <label>Local Search Neighborhood Type:</label>
-        <select
-          value={neighborhoodType}
-          onChange={(e) => setNeighborhoodType(e.target.value as 'geometry' | 'rule' | 'overlap')}
-          disabled={isRunning}
-        >
-          <option value="geometry">Geometry-Based (Move rectangles geometrically)</option>
-          <option value="rule">Rule-Based (Modify rectangle permutations)</option>
-          <option value="overlap">Overlap-Based (Allow partial overlaps)</option>
         </select>
       </div>
 
       <div className="input-group">
         <button 
           className="button" 
-          onClick={runBothAlgorithms}
+          onClick={runAlgorithm}
           disabled={isRunning || rectangles.length === 0}
         >
-          {isRunning ? 'Running...' : 'Run Algorithms'}
+          {isRunning ? 'Running...' : 'Run Greedy Algorithm'}
         </button>
       </div>
 
       {rectangles.length === 0 && (
         <p className="error">
-          Please add some rectangles before running algorithms.
+          Please add some rectangles before running the algorithm.
         </p>
       )}
     </div>

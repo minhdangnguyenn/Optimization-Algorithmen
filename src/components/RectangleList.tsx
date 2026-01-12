@@ -1,16 +1,16 @@
 import React from 'react';
-import { Rectangle } from '../types';
+import { Rectangle } from '../algorithm/rectangle';
 
 interface RectangleListProps {
   rectangles: Rectangle[];
-  onRemoveRectangle: (id: number) => void;
+  onRemoveRectangle: (index: number) => void;
 }
 
 export const RectangleList: React.FC<RectangleListProps> = ({
   rectangles,
   onRemoveRectangle
 }) => {
-  const totalArea = rectangles.reduce((sum: number, rect: Rectangle) => sum + (rect.width * rect.height), 0);
+  const totalArea = rectangles.reduce((sum: number, rect: Rectangle) => sum + rect.area, 0);
 
   return (
     <div className="rectangles-list">
@@ -27,16 +27,15 @@ export const RectangleList: React.FC<RectangleListProps> = ({
           </div>
           
           <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-            {rectangles.map((rect: Rectangle) => (
-              <div key={rect.id} className="rectangle-item">
+            {rectangles.map((rect: Rectangle, index: number) => (
+              <div key={index} className="rectangle-item">
                 <span>
-                  Rectangle {rect.id}: {rect.width} × {rect.height} 
-                  (Area: {rect.width * rect.height})
-                  {rect.rotated && ' [Rotated]'}
+                  Rectangle {index + 1}: {rect.width} × {rect.height} 
+                  (Area: {rect.area})
                 </span>
                 <button 
                   className="button secondary"
-                  onClick={() => onRemoveRectangle(rect.id)}
+                  onClick={() => onRemoveRectangle(index)}
                   style={{ padding: '4px 8px', fontSize: '12px' }}
                 >
                   Remove

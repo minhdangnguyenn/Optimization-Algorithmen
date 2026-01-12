@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Rectangle } from '../types';
+import { Rectangle } from '../algorithm/rectangle';
 
 interface RectangleInputProps {
-  onAddRectangle: (rectangle: Omit<Rectangle, 'id'>) => void;
-  onAddMultipleRectangles: (rectangles: Omit<Rectangle, 'id'>[]) => void;
+  onAddRectangle: (width: number, height: number) => void;
+  onAddMultipleRectangles: (rectangles: Array<{width: number, height: number}>) => void;
   onClearRectangles: () => void;
   rectangles: Rectangle[];
   boxSize: number;
@@ -49,10 +49,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
       
       rectanglesToAdd.push({
         width: randomWidth,
-        height: randomHeight,
-        originalWidth: randomWidth,
-        originalHeight: randomHeight,
-        rotated: false
+        height: randomHeight
       });
     }
 

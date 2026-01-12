@@ -1,38 +1,11 @@
-export interface Rectangle {
-  id: number;
-  width: number;
-  height: number;
-  originalWidth: number;
-  originalHeight: number;
-  rotated: boolean;
-}
+import type { Box } from './algorithm/box';
+// import type { Rectangle } from './algorithm/rectangle';
 
-export interface PlacedRectangle extends Rectangle {
-  x: number;
-  y: number;
-  boxId: number;
-}
-
-export interface Box {
-  id: number;
-  width: number;
-  height: number;
-  rectangles: PlacedRectangle[];
-}
-
+// Packing result for visualization
 export interface PackingResult {
   boxes: Box[];
   totalBoxes: number;
   utilization: number;
   algorithm: string;
   executionTime: number;
-  comparisonResult?: {
-    greedy: PackingResult;
-    localSearch: PackingResult;
-  };
-}
-
-export interface Point {
-  x: number;
-  y: number;
 }
