@@ -26,9 +26,9 @@ export class LocalSearchPacker {
    * Set the early stopping threshold
    * @param threshold Fraction of maxIterations after which to stop if no improvement (e.g., 0.2 = 20%)
    */
-  setEarlyStoppingThreshold(threshold: number): void {
-    this.earlyStoppingThreshold = Math.max(0.05, Math.min(1, threshold)); // Clamp between 5% and 100%
-  }
+//   setEarlyStoppingThreshold(threshold: number): void {
+//     this.earlyStoppingThreshold = Math.max(0.05, Math.min(1, threshold)); // Clamp between 5% and 100%
+//   }
 
   pack(rectangles: Rectangle[], maxIterations: number = 100): PackingResult {
     const startTime = performance.now();
@@ -124,56 +124,23 @@ export class LocalSearchPacker {
   }
 
   private generateInitialSolution(rectangles: Rectangle[]): PackingResult {
-    // Sort rectangles by area (descending) for better initial packing
-    const sorted = [...rectangles].sort((a, b) => (b.width * b.height) - (a.width * a.height));
-    
+    // Naive solution: each rectangle gets its own box at position (0, 0)
     const boxes: Box[] = [];
-    let boxCounter = 0;
 
-    for (const rect of sorted) {
-      // Try to place in existing boxes
-      let placed = false;
-      
-      // Sort boxes by occupancy (ascending) - prefer less filled boxes
-      const sortedBoxes = [...boxes].sort((a, b) => a.rectangles.length - b.rectangles.length);
-      
-      for (const box of sortedBoxes) {
-        const position = this.findBestPosition(box, rect);
-        if (position) {
-          box.rectangles.push({
-            ...rect,
-            x: position.x,
-            y: position.y,
-            boxId: box.id
-          });
-          placed = true;
-          break;
-        }
-      }
-
-      // If not placed in any existing box, create a new one
-      if (!placed) {
-        const newBox: Box = {
-          id: boxCounter++,
-          width: this.boxSize,
-          height: this.boxSize,
-          rectangles: []
-        };
-        
-        const position = this.findBestPosition(newBox, rect);
-        if (position) {
-          newBox.rectangles.push({
-            ...rect,
-            x: position.x,
-            y: position.y,
-            boxId: newBox.id
-          });
-          boxes.push(newBox);
-        } else {
-          // Rectangle cannot fit even in an empty box
-          return { boxes: [], totalBoxes: 0, utilization: 0, algorithm: 'Failed', executionTime: 0 };
-        }
-      }
+    for (let i = 0; i < rectangles.length; i++) {
+      const rect = rectangles[i];
+      const box: Box = {
+        id: i,
+        width: this.boxSize,
+        height: this.boxSize,
+        rectangles: [{
+          ...rect,
+          x: 0,
+          y: 0,
+          boxId: i
+        }]
+      };
+      boxes.push(box);
     }
 
     const utilization = this.calculateUtilization(boxes);
@@ -181,7 +148,7 @@ export class LocalSearchPacker {
       boxes,
       totalBoxes: boxes.length,
       utilization,
-      algorithm: 'Initial Solution',
+      algorithm: 'Naive Solution',
       executionTime: 0
     };
   }
