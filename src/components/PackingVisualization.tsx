@@ -53,7 +53,7 @@ const VisualizationPanel: React.FC<{
                 height: `${visualBoxSize}px`,
                 position: 'relative',
                 margin: '5px',
-                border: '1px solid #ccc',
+                border: '2px solid #353131',
                 background: '#fff'
               }}
             >
@@ -72,12 +72,17 @@ const VisualizationPanel: React.FC<{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#fff',
-                    fontWeight: 'bold'
+                    color: '#eae3e3',
+                    fontWeight: 'bold',
+                    flexDirection: 'column',
+                    border: "1px solid #060606",
+                    gap: '2px'
                   }}
                 >
-                  {rect.id}
-                  {rect.rotated && '↻'}
+                  <div>R{rect.id}{rect.rotated && '↻'}</div>
+                  <div style={{ fontSize: '0.8em', opacity: 0.9 }}>
+                    {rect.width}×{rect.height}
+                  </div>
                 </div>
               ))}
             </div>

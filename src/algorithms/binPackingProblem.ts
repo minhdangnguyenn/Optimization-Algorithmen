@@ -95,6 +95,7 @@ export class BinPackingSolutionBuilder implements SolutionBuilder<Rectangle, Bin
     };
 
     const position = this.findBestPosition(newBox, rectangle);
+    
     if (position) {
       const placedRect: PlacedRectangle = {
         ...rectangle,
