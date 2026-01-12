@@ -10,7 +10,7 @@ import { BinPackingSolutionBuilder } from './BinPackingSolutionBuilder';
 import { 
   GreedyAlgorithm, 
 } from './greedy/GreedyAlgorithm';
-import { AreaBasedSelection, HeightBasedSelection } from './greedy/GreedyPacking';
+import { AreaBasedSelection, HeightBasedSelection } from './greedy/Strategy';
 import {
   GenericLocalSearchAlgorithm,
   Neighborhood,
