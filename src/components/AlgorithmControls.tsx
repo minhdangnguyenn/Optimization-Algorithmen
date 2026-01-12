@@ -26,10 +26,6 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     onRunningStateChange(running);
   };
 
-  const getGreedyPacker = (boxSize: number) => {
-    return new GreedyPacker(boxSize, greedyCriteria);
-  };
-
   const runBothAlgorithms = async () => {
     if (rectangles.length === 0) return;
     
@@ -42,7 +38,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
       // Add small delay to show loading state and reset
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const greedyPacker = getGreedyPacker(boxSize);
+      const greedyPacker = new GreedyPacker(boxSize, greedyCriteria);
       const localSearchPacker = new LocalSearchPacker(boxSize, neighborhoodType);
       
       const greedyResult = greedyPacker.pack(rectangles);
@@ -54,14 +50,13 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
         ? localSearchResult
         : greedyResult;
       
-      const criteriaName = greedyCriteria === 'area' ? 'Area' : "Height";
       const neighborhoodName = neighborhoodType === 'geometry' ? 'Geometry-Based' :
                               neighborhoodType === 'rule' ? 'Rule-Based' :
                               'Overlap-Based';
       
       onResult({
         ...betterResult,
-        algorithm: `Comparison: Greedy ${criteriaName} (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs LS-${neighborhoodName} (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`,
+        algorithm: `Comparison: Greedy ${greedyCriteria} (${greedyResult.totalBoxes} boxes, ${greedyResult.utilization.toFixed(1)}%) vs LS-${neighborhoodName} (${localSearchResult.totalBoxes} boxes, ${localSearchResult.utilization.toFixed(1)}%)`,
         comparisonResult: {
           greedy: greedyResult,
           localSearch: localSearchResult
@@ -86,7 +81,6 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
           disabled={isRunning}
         >
           <option value="area">Area Descending (Default)</option>
-          {/* <option value="width">Width Descending</option> */}
           <option value="height">Height Descending</option>
         </select>
       </div>
