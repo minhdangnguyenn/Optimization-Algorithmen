@@ -5,7 +5,6 @@ import type { PackingSolution } from "../solution";
 import type { PuttingStrategy } from "./putting";
 
 export class FirstFitPlacer implements GreedyExtender<Rectangle, PackingSolution> {
-
     private boxSize: number;
     private puttingStrategy: PuttingStrategy;
 
@@ -18,8 +17,7 @@ export class FirstFitPlacer implements GreedyExtender<Rectangle, PackingSolution
         solution: PackingSolution,
         rectangle: Rectangle
     ): PackingSolution {
-
-        // Try existing boxes
+        // Try to put boxes of the solution into a rectangle
         for (const box of solution.boxes) {
             if (this.puttingStrategy.tryPut(rectangle, box)) {
                 return solution;

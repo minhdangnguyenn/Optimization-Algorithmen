@@ -6,7 +6,6 @@ export interface PuttingStrategy {
 }
 
 export class BottomLeftPutting implements PuttingStrategy {
-
     tryPut(rectangle: Rectangle, box: Box): boolean {
         const posistions: { x: number; y: number }[] = [{ x: 0, y: 0 }];
 
