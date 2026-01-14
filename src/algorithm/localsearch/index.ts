@@ -3,20 +3,10 @@ export interface NeighborhoodStrategy<S extends State> {
   generateNeighbors(state: S): readonly S[];
 }
 
-// do the Geometrybased first
-export interface Geometrybased<
-  S extends State,
-> extends NeighborhoodStrategy<S> {
-  // geometry-specific parameters only
-}
-
-export interface Rulebased {}
-export interface PartialOververlap {}
-
 // State means the state of the solution
 export interface State {
   isCompleted(): boolean;
-  evaluate(): number; // lower means better
+  evaluate(): number; // higher means better, my idea: get the utilization
 }
 
 export class LocalSearchSolver<S extends State> {
@@ -29,35 +19,38 @@ export class LocalSearchSolver<S extends State> {
   }
 
   solve(initialState: S): S {
-    let current = initialState;
-    let currentScore = current.evaluate();
+    let currentState = initialState;
+    let currentScore = currentState.evaluate();
 
     let iteration = 0;
 
-    while (!current.isCompleted() && iteration < this.maxIterations) {
-      const neighbors = this.neighborhood.generateNeighbors(current);
+    while (!currentState.isCompleted() && iteration < this.maxIterations) {
+      const neighborStates = this.neighborhood.generateNeighbors(currentState);
 
-      let bestNeighbor = current;
+      let bestState = currentState;
       let bestScore = currentScore;
 
-      for (const n of neighbors) {
-        const score = n.evaluate();
-        if (score < bestScore) {
-          bestNeighbor = n;
+      for (const state of neighborStates) {
+        const score = state.evaluate();
+
+        // the the current score and current state is better than the best then update the best
+        if (score > bestScore) {
+          bestState = state;
           bestScore = score;
         }
       }
 
-      // no improvement
-      if (bestScore >= currentScore) {
+      // no improvement then skip
+      if (bestScore <= currentScore) {
         break;
       }
 
-      current = bestNeighbor;
+      // else if new result is better, keep tracking
+      currentState = bestState;
       currentScore = bestScore;
       iteration++;
     }
 
-    return current;
+    return currentState;
   }
 }
