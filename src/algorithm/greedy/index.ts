@@ -1,21 +1,16 @@
-export interface GreedyElement {}
+import { State } from "../state";
 
-export interface GreedyState {
-  isComplete(): boolean;
-}
+export interface GreedyElement {}
 
 export interface OrderingStrategy<E extends GreedyElement> {
   order(elements: readonly E[]): readonly E[];
 }
 
-export interface GreedyExtender<
-  E extends GreedyElement,
-  S extends GreedyState,
-> {
+export interface GreedyExtender<E extends GreedyElement, S extends State> {
   extend(state: S, element: E): S;
 }
 
-export class GreedySolver<E extends GreedyElement, S extends GreedyState> {
+export class GreedySolver<E extends GreedyElement, S extends State> {
   ordering: OrderingStrategy<E>;
   extender: GreedyExtender<E, S>;
 

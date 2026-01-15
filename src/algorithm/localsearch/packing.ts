@@ -5,9 +5,17 @@ import { State } from ".";
 export class PackingState implements State {
   constructor(
     private boxes: Box[],
-    private packedRectangles: Rectangle[],
+    private _packedRectangles: Rectangle[],
     private rectangles: Rectangle[],
-  ) {}
+  ) {
+    this.boxes = boxes;
+    this._packedRectangles = _packedRectangles;
+    this.rectangles = rectangles;
+  }
+
+  get packedRectangles(): Rectangle[] {
+    return this._packedRectangles;
+  }
 
   isCompleted(): boolean {
     return this.rectangles.length === this.packedRectangles.length;

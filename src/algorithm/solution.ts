@@ -1,16 +1,14 @@
 import { Box } from "./box";
-import type { GreedyState } from "./greedy";
+import type { State } from "./state";
 
+export class PackingSolution implements State {
+  readonly boxes: Box[];
 
-export class PackingSolution implements GreedyState {
+  constructor(boxSize: number) {
+    this.boxes = [new Box(boxSize)];
+  }
 
-    readonly boxes: Box[];
-
-    constructor(boxSize: number) {
-        this.boxes = [new Box(boxSize)];
-    }
-    
-    isComplete(): boolean {
-        return false;
-    }
+  isComplete(): boolean {
+    return false;
+  }
 }
