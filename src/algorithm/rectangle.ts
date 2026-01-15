@@ -1,4 +1,4 @@
-import { Candidate } from "../interfaces/candidate";
+import { Candidate } from "../types/candidate";
 
 export class Rectangle implements Candidate {
   // Position within the box

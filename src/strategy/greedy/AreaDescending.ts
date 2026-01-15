@@ -1,5 +1,5 @@
 import { Rectangle } from "../../algorithm/rectangle";
-import { OrderingStrategy } from "../../interfaces/strategy/oderStrategy";
+import { OrderingStrategy } from "../../types/strategy/orderStrategy";
 
 /**
  * Init two order strategies

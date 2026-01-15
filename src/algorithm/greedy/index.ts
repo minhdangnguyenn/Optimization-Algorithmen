@@ -1,7 +1,5 @@
-import { State } from "../../interfaces/state";
-import { Extender } from "../../interfaces/extender";
-import { Candidate } from "../../interfaces/candidate";
-import { OrderingStrategy } from "../../interfaces/strategy/oderStrategy";
+import { State, Extender, Candidate, OrderingStrategy } from "../../types";
+
 import { Algorithm } from "..";
 //export interface GreedyElement {}
 

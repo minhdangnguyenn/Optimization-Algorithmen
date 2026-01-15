@@ -1,4 +1,4 @@
-import { OrderingStrategy } from "../../interfaces/strategy/oderStrategy";
+import { OrderingStrategy } from "../../types/strategy/orderStrategy";
 import { Rectangle } from "../../algorithm/rectangle";
 
 export class HeightDescendingStrategy implements OrderingStrategy<Rectangle> {

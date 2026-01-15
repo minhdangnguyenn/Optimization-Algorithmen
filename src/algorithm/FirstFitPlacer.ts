@@ -1,8 +1,8 @@
-import type { Extender } from "../interfaces/extender";
+import type { Extender } from "../types/extender";
 import { Box } from "./box";
 import type { Rectangle } from "./rectangle";
 import type { PackingSolution } from "./solution";
-import type { PackingStrategy } from "../interfaces/strategy/packingStrategy";
+import type { PackingStrategy } from "../types/strategy/packingStrategy";
 
 /**
  * decide in which bx should the rectangle be put

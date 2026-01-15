@@ -1,5 +1,5 @@
 import { Algorithm } from "..";
-import { State } from "../../interfaces/state";
+import type { State } from "../../types";
 
 // this is the strategy of neighborhood
 export interface LocalPacker<S extends State> {
