@@ -47,7 +47,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     algorithmName: string,
     executionTime: number,
   ): PackingResult => {
-    const totalArea = rectangles.reduce((sum, r) => sum + r.area, 0);
+    // compute total area of rectangles
     const usedArea = solution.boxes.reduce(
       (sum, box) =>
         sum + box.rectangles.reduce((boxSum, rect) => boxSum + rect.area, 0),
@@ -56,13 +56,15 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     const totalBoxArea = solution.boxes.length * boxSize * boxSize;
     const utilization = totalBoxArea > 0 ? (usedArea / totalBoxArea) * 100 : 0;
 
-    return {
+    const result: PackingResult = {
       boxes: solution.boxes,
       totalBoxes: solution.boxes.length,
       utilization,
       algorithm: algorithmName,
       executionTime,
     };
+
+    return result;
   };
 
   const runAlgorithm = async () => {
