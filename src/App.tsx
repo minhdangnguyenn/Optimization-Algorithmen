@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
-import { PackingResult } from './types';
-import { Rectangle } from './algorithm/rectangle';
-import { RectangleInput } from './components/RectangleInput';
-import { RectangleList } from './components/RectangleList';
-import { AlgorithmControls } from './components/AlgorithmControls';
-import { PackingVisualization } from './components/PackingVisualization';
+import React, { useState } from "react";
+import { PackingResult } from "./types";
+import { Rectangle } from "./algorithm/rectangle";
+import { RectangleInput } from "./components/RectangleInput";
+import { RectangleList } from "./components/RectangleList";
+import { AlgorithmControls } from "./components/AlgorithmControls";
+import { PackingVisualization } from "./components/PackingVisualization";
 
 function App(): React.ReactElement {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [boxSize, setBoxSize] = useState<number>(200);
-  const [boxSizeInput, setBoxSizeInput] = useState<string>('100');
+  const [boxSizeInput, setBoxSizeInput] = useState<string>("100");
   const [result, setResult] = useState<PackingResult | null>(null);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState<boolean>(false);
 
-  const addRectangle = (width: number, height: number): void => {
-    const newRectangle = new Rectangle(width, height);
+  const addRectangle = (id: number, width: number, height: number): void => {
+    const newRectangle = new Rectangle(id, width, height);
     setRectangles((prev: Rectangle[]) => [...prev, newRectangle]);
     setResult(null); // Clear previous results
   };
 
-  const addMultipleRectangles = (rectangleData: Array<{width: number, height: number}>): void => {
-    const newRectangles: Rectangle[] = rectangleData.map(data => new Rectangle(data.width, data.height));
+  const addMultipleRectangles = (
+    rectangleData: Array<{ id: number; width: number; height: number }>,
+  ): void => {
+    const newRectangles: Rectangle[] = rectangleData.map(
+      (data) => new Rectangle(data.id, data.width, data.height),
+    );
     setRectangles((prev: Rectangle[]) => [...prev, ...newRectangles]);
     setResult(null); // Clear previous results
   };
@@ -54,8 +58,9 @@ function App(): React.ReactElement {
       <div className="header">
         <h1>2D Rectangle Packing Optimizer</h1>
         <p>
-          Solve the rectangle packing problem using greedy and local search algorithms.
-          Minimize the number of boxes needed to pack all rectangles.
+          Solve the rectangle packing problem using greedy and local search
+          algorithms. Minimize the number of boxes needed to pack all
+          rectangles.
         </p>
       </div>
 
@@ -87,7 +92,6 @@ function App(): React.ReactElement {
         boxSize={boxSize}
         isRunning={isAlgorithmRunning}
       />
-
     </div>
   );
 }

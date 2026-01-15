@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Rectangle } from "../algorithm/rectangle";
 
 interface RectangleInputProps {
-  onAddRectangle: (width: number, height: number) => void;
+  onAddRectangle: (id: number, width: number, height: number) => void;
   onAddMultipleRectangles: (
     rectangles: Array<{ width: number; height: number }>,
   ) => void;
@@ -52,6 +52,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         Math.floor(Math.random() * (maxSide - minSide + 1)) + minSide;
 
       rectanglesToAdd.push({
+        id: i + 1,
         width: randomWidth,
         height: randomHeight,
       });

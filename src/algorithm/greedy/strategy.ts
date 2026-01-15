@@ -17,15 +17,19 @@ export class FirstFitPlacer implements GreedyExtender<
   }
 
   extend(solution: PackingSolution, rectangle: Rectangle): PackingSolution {
-    // Try to put boxes of the solution into a rectangle
+    // try to put a rectangle into a box by iterating boxes
+    // if it is able, stop the extend process
     for (const box of solution.boxes) {
       if (this.packingStrategy.tryPut(rectangle, box)) {
         return solution;
       }
     }
 
-    // Creating new box
-    const newBox = new Box(this.boxSize);
+    // if can not put the rectangle into any boxes
+    // means that all of boxes are full
+    // then create a new box for rectangle
+    const newBoxID = solution.boxes.length + 1;
+    const newBox = new Box(newBoxID, this.boxSize);
     rectangle.setPosition(0, 0);
     newBox.addRect(rectangle);
     solution.boxes.push(newBox);

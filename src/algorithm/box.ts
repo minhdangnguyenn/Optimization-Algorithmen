@@ -1,6 +1,7 @@
 import type { Rectangle } from "./rectangle";
 
 export class Box {
+  readonly id: number;
   readonly length: number;
   rectangles: Rectangle[];
   utilization: number;
@@ -9,7 +10,8 @@ export class Box {
     return this.length * this.length;
   }
 
-  constructor(size: number) {
+  constructor(id: number, size: number) {
+    this.id = id;
     this.length = size;
     this.rectangles = [];
     this.utilization = 0;
