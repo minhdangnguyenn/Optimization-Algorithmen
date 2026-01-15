@@ -1,11 +1,14 @@
-import { State } from "../state";
+import { State } from "../../interfaces/state";
 import { Extender } from "../../interfaces/extender";
 import { Candidate } from "../../interfaces/candidate";
 import { OrderingStrategy } from "../../interfaces/strategy/oderStrategy";
-
+import { Algorithm } from "..";
 //export interface GreedyElement {}
 
-export class GreedySolver<C extends Candidate, S extends State> {
+export class GreedySolver<
+  C extends Candidate,
+  S extends State,
+> implements Algorithm<C, S> {
   ordering: OrderingStrategy<C>;
   extender: Extender<C, S>;
 

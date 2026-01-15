@@ -1,5 +1,5 @@
 import { Box } from "./box";
-import type { State } from "./state";
+import type { State } from "../interfaces/state";
 
 export class PackingSolution implements State {
   readonly boxes: Box[];

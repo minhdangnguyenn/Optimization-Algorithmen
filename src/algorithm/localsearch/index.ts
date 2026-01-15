@@ -1,11 +1,12 @@
-import { State } from "../state";
+import { Algorithm } from "..";
+import { State } from "../../interfaces/state";
 
 // this is the strategy of neighborhood
 export interface LocalPacker<S extends State> {
   generateNeighbors(state: S): readonly S[];
 }
 
-export class LocalSearchSolver<S extends State> {
+export class LocalSearchSolver<S extends State> implements Algorithm<never, S> {
   private neighborhood: LocalPacker<S>;
   private maxIterations: number;
 

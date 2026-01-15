@@ -1,6 +1,6 @@
-import type { GreedyElement } from "./greedy";
+import { Candidate } from "../interfaces/candidate";
 
-export class Rectangle implements GreedyElement {
+export class Rectangle implements Candidate {
   // Position within the box
   private x: number | null = null;
   private y: number | null = null;
