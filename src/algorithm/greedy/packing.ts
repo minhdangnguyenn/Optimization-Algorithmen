@@ -26,7 +26,7 @@ export class BottomLeftPacking implements PackingStrategy {
 
     for (const rect of orientations) {
       for (const { x, y } of posistions) {
-        const testRect = new Rectangle(rect.width, rect.height);
+        const testRect = new Rectangle(rect.id, rect.width, rect.height);
         testRect.setPosition(x, y);
 
         let overlapping = false;
