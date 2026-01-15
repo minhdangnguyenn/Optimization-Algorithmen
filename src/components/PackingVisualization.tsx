@@ -1,6 +1,6 @@
 import React from "react";
 import { PackingResult } from "../types";
-import type { Box } from "../algorithm/box";
+import type { Box } from "../algorithm";
 
 interface PackingVisualizationProps {
   result: PackingResult | null;

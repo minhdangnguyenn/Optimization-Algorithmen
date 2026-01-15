@@ -1,9 +1,6 @@
 import type { Box } from "./box";
 import { Rectangle } from "./rectangle";
-
-export interface PackingStrategy {
-  tryPut(rectangle: Rectangle, box: Box): boolean;
-}
+import { PackingStrategy } from "../types";
 
 export class BottomLeftPacking implements PackingStrategy {
   tryPut(rectangle: Rectangle, box: Box): boolean {
