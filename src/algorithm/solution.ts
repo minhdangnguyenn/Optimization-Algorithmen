@@ -8,7 +8,7 @@ export class PackingSolution implements State {
     this.boxes = [new Box(0, boxSize)];
   }
 
-  isComplete(): boolean {
+  isCompleted(): boolean {
     return false;
   }
 }

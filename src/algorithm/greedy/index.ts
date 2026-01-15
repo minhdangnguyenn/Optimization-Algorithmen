@@ -1,30 +1,27 @@
 import { State } from "../state";
+import { Extender } from "../../interfaces/extender";
+import { Candidate } from "../../interfaces/candidate";
+import { OrderingStrategy } from "../../interfaces/strategy/oderStrategy";
 
-export interface GreedyElement {}
+//export interface GreedyElement {}
 
-export interface OrderingStrategy<E extends GreedyElement> {
-  order(elements: readonly E[]): readonly E[];
-}
+export class GreedySolver<C extends Candidate, S extends State> {
+  ordering: OrderingStrategy<C>;
+  extender: Extender<C, S>;
 
-export interface GreedyExtender<E extends GreedyElement, S extends State> {
-  extend(state: S, element: E): S;
-}
-
-export class GreedySolver<E extends GreedyElement, S extends State> {
-  ordering: OrderingStrategy<E>;
-  extender: GreedyExtender<E, S>;
-
-  constructor(ordering: OrderingStrategy<E>, extender: GreedyExtender<E, S>) {
+  constructor(ordering: OrderingStrategy<C>, extender: Extender<C, S>) {
     this.ordering = ordering;
     this.extender = extender;
   }
 
-  solve(initialState: S, elements: readonly E[]): S {
+  solve(initialState: S, candidates: readonly C[]): S {
     let state = initialState;
-    const orderedElements = this.ordering.order(elements);
-    for (const element of orderedElements) {
-      if (state.isComplete()) break;
-      state = this.extender.extend(state, element);
+    const orderedCandidate = this.ordering.order(candidates);
+    for (const candidate of orderedCandidate) {
+      // if it is done then break
+      // else keep extend the current state
+      if (state.isCompleted()) break;
+      state = this.extender.extend(state, candidate);
     }
 
     return state;

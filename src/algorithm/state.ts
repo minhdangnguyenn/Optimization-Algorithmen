@@ -1,4 +1,4 @@
 export interface State {
-  isComplete(): boolean;
+  isCompleted(): boolean;
   evaluate?(): number;
 }

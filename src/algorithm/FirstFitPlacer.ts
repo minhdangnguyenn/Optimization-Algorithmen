@@ -1,13 +1,15 @@
-import type { GreedyExtender } from ".";
-import { Box } from "../box";
-import type { Rectangle } from "../rectangle";
-import type { PackingSolution } from "../solution";
-import type { PackingStrategy } from "./packing";
+import type { Extender } from "../interfaces/extender";
+import { Box } from "./box";
+import type { Rectangle } from "./rectangle";
+import type { PackingSolution } from "./solution";
+import type { PackingStrategy } from "../interfaces/strategy/packingStrategy";
 
-export class FirstFitPlacer implements GreedyExtender<
-  Rectangle,
-  PackingSolution
-> {
+/**
+ * decide in which bx should the rectangle be put
+ * @param Rectangle try to extend with this rectangle
+ * @param PackingSolution the current solution to pack this rectangle
+ */
+export class FirstFitPlacer implements Extender<Rectangle, PackingSolution> {
   private boxSize: number;
   private packingStrategy: PackingStrategy;
 
@@ -16,6 +18,12 @@ export class FirstFitPlacer implements GreedyExtender<
     this.packingStrategy = packingStrategy;
   }
 
+  /**
+   * Extend the current solution to for the next rectangle
+   * @param solution current solution
+   * @param rectangle the next rectangle
+   * @returns
+   */
   extend(solution: PackingSolution, rectangle: Rectangle): PackingSolution {
     // try to put a rectangle into a box by iterating boxes
     // if it is able, stop the extend process

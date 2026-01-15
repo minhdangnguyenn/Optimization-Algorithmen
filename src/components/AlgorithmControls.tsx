@@ -1,29 +1,20 @@
 import React, { useState } from "react";
 import { PackingResult } from "../types";
-import { GreedySolver, OrderingStrategy } from "../algorithm/greedy";
+import { GreedySolver } from "../algorithm/greedy";
 import { Rectangle } from "../algorithm/rectangle";
 import { PackingSolution } from "../algorithm/solution";
-import { FirstFitPlacer } from "../algorithm/greedy/strategy";
-import { BottomLeftPacking as BottomLeftPacking } from "../algorithm/greedy/packing";
+import { FirstFitPlacer } from "../algorithm/FirstFitPlacer";
+import { BottomLeftPacking as BottomLeftPacking } from "../algorithm/BottomLeftPacker";
+import {
+  AreaDescendingStrategy,
+  HeightDescendingStrategy,
+} from "../strategy/greedy";
 
 interface AlgorithmControlsProps {
   rectangles: Rectangle[];
   boxSize: number;
   onResult: (result: PackingResult | null) => void;
   onRunningStateChange: (isRunning: boolean) => void;
-}
-
-// Ordering strategies
-class AreaDescendingStrategy implements OrderingStrategy<Rectangle> {
-  order(elements: readonly Rectangle[]): readonly Rectangle[] {
-    return [...elements].sort((a, b) => b.area - a.area);
-  }
-}
-
-class HeightDescendingStrategy implements OrderingStrategy<Rectangle> {
-  order(elements: readonly Rectangle[]): readonly Rectangle[] {
-    return [...elements].sort((a, b) => b.height - a.height);
-  }
 }
 
 export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({

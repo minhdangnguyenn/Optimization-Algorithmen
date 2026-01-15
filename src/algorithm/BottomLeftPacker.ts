@@ -1,5 +1,5 @@
-import type { Box } from "../box";
-import { Rectangle } from "../rectangle";
+import type { Box } from "./box";
+import { Rectangle } from "./rectangle";
 
 export interface PackingStrategy {
   tryPut(rectangle: Rectangle, box: Box): boolean;

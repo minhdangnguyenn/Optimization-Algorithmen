@@ -1,19 +1,15 @@
+import { State } from "../state";
+
 // this is the strategy of neighborhood
-export interface NeighborhoodStrategy<S extends State> {
+export interface LocalPacker<S extends State> {
   generateNeighbors(state: S): readonly S[];
 }
 
-// State means the state of the solution
-export interface State {
-  isCompleted(): boolean;
-  evaluate(): number; // higher means better, my idea: get the utilization
-}
-
 export class LocalSearchSolver<S extends State> {
-  private neighborhood: NeighborhoodStrategy<S>;
+  private neighborhood: LocalPacker<S>;
   private maxIterations: number;
 
-  constructor(neighborhood: NeighborhoodStrategy<S>, maxIterations = 1000) {
+  constructor(neighborhood: LocalPacker<S>, maxIterations = 1000) {
     this.neighborhood = neighborhood;
     this.maxIterations = maxIterations;
   }
