@@ -1,5 +1,5 @@
-import { Rectangle } from "../../rectangle";
-import { Box } from "../../box";
+import { Rectangle } from "../../algorithm/rectangle";
+import { Box } from "../../algorithm/box";
 /**
  * This class decides how rectangle be placed in a box
  * It can be area desc or height desc

@@ -3,6 +3,7 @@ import { Extender } from "./extender";
 import { Candidate } from "./candidate";
 import { OrderingStrategy } from "./strategy/orderStrategy";
 import { PackingVisualization } from "../components/PackingVisualization";
+import { PackingResult } from "./packingResult";
 
 export type {
   State,
@@ -10,4 +11,5 @@ export type {
   Candidate,
   OrderingStrategy,
   PackingVisualization,
+  PackingResult,
 };

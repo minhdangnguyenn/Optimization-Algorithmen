@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PackingResult } from "../types";
+import type { PackingResult } from "../types";
 import { GreedySolver } from "../algorithm/greedy";
 import { Rectangle } from "../algorithm/rectangle";
 import { PackingSolution } from "../algorithm/solution";
