@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PackingResult } from "./types";
+import { ComparisonResult } from "./types";
 import { Rectangle } from "./algorithm/rectangle";
 import { RectangleInput } from "./components/RectangleInput";
 import { RectangleList } from "./components/RectangleList";
@@ -10,7 +10,7 @@ function App(): React.ReactElement {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [boxSize, setBoxSize] = useState<number>(200);
   const [boxSizeInput, setBoxSizeInput] = useState<string>("100");
-  const [result, setResult] = useState<PackingResult | null>(null);
+  const [result, setResult] = useState<ComparisonResult | null>(null);
   const [isAlgorithmRunning, setIsAlgorithmRunning] = useState<boolean>(false);
 
   const addRectangle = (id: number, width: number, height: number): void => {
@@ -45,7 +45,7 @@ function App(): React.ReactElement {
     setResult(null);
   };
 
-  const handleResult = (newResult: PackingResult | null): void => {
+  const handleResult = (newResult: ComparisonResult | null): void => {
     setResult(newResult);
   };
 

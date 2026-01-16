@@ -4,7 +4,7 @@ import { Rectangle } from "../../algorithm";
 import { Box } from "../../algorithm";
 
 export class GeometryBasedNeighborhood implements NeighborhoodStrategy<PackingSolution> {
-    generateNeighbors(solution: PackingSolution): PackingSolution[] {
+    getNeighbors(solution: PackingSolution): PackingSolution[] {
         const neighbors: PackingSolution[] = [];
 
         for (const box of solution.boxes) {

@@ -9,3 +9,9 @@ export interface PackingResult {
   algorithm: string;
   executionTime: number;
 }
+
+// Comparison result that holds both algorithm results
+export interface ComparisonResult {
+  greedy: PackingResult | null;
+  localSearch: PackingResult | null;
+}

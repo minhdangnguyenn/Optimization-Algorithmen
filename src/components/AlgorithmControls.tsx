@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { PackingResult } from "../types";
+import type { PackingResult, ComparisonResult } from "../types";
 import {
     FirstFitPlacer,
     Box,
@@ -14,11 +14,15 @@ import {
     HeightDescendingStrategy,
 } from "../strategy/selectionStrategy";
 import { GeometryBasedNeighborhood } from "../strategy/neighborhoodStrategy";
+import {
+    NeighborhoodAdapter,
+    createBadInitialSolution,
+} from "../algorithm/localsearch";
 
 interface AlgorithmControlsProps {
     rectangles: Rectangle[];
     boxSize: number;
-    onResult: (result: PackingResult | null) => void;
+    onResult: (result: ComparisonResult | null) => void;
     onRunningStateChange: (isRunning: boolean) => void;
 }
 
@@ -32,7 +36,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     const [sortingCriteria, setSortingCriteria] = useState<"area" | "height">(
         "area",
     );
-    const [neighborhoodStrategy, setSearchCriteria] =
+    const [neighborhoodStrategy, setNeighborhoodStrategy] =
         useState<"Geometry based">("Geometry based");
 
     const setRunningState = (running: boolean) => {
@@ -67,7 +71,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
         return result;
     };
 
-    const runAlgorithm = async () => {
+    const runAlgorithms = async () => {
         if (rectangles.length === 0) return;
 
         setRunningState(true);
@@ -76,47 +80,78 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
         try {
             await new Promise((resolve) => setTimeout(resolve, 100));
 
-            const startTime = performance.now();
+            let greedyResult: PackingResult | null = null;
+            let localSearchResult: PackingResult | null = null;
 
-            // Init instances for greedy
-            // Use rectangles directly - they are already Rectangle class instances
-            const selectionStrategy =
-                sortingCriteria === "area"
-                    ? new AreaDescendingStrategy()
-                    : new HeightDescendingStrategy();
+            // Run Greedy algorithm
+            try {
+                const greedyStartTime = performance.now();
+                const selectionStrategy =
+                    sortingCriteria === "area"
+                        ? new AreaDescendingStrategy()
+                        : new HeightDescendingStrategy();
 
-            // Create putting strategy and placer
-            // There is only one packingStrategy and placer
-            const packingStrategy = new BottomLeftPacking();
-            const placer = new FirstFitPlacer(boxSize, packingStrategy);
+                const packingStrategy = new BottomLeftPacking();
+                const placer = new FirstFitPlacer(boxSize, packingStrategy);
+                const solver = new GreedySolver(selectionStrategy, placer);
 
-            // Create solver
-            const solver = new GreedySolver(selectionStrategy, placer);
+                const initialSolution = new PackingSolution(boxSize);
+                const greedySolution = solver.solve(
+                    initialSolution,
+                    rectangles,
+                );
+                const greedyEndTime = performance.now();
+                const greedyExecutionTime = greedyEndTime - greedyStartTime;
 
-            // Init instances for local search
-            const neighborhoodType =
-                neighborhoodStrategy === "Geometry based"
-                    ? new GeometryBasedNeighborhood()
-                    : null;
+                greedyResult = convertSolutionToResult(
+                    greedySolution,
+                    `Greedy FFD (${sortingCriteria === "area" ? "Area" : "Height"} Descending)`,
+                    greedyExecutionTime,
+                );
+            } catch (error) {
+                console.error("Error running Greedy algorithm:", error);
+            }
 
-            // const localSearchSolver = new LocalSearchSolver(neighborhoodType);
+            // Run Local Search algorithm
+            try {
+                const localSearchStartTime = performance.now();
+                const neighborhoodType =
+                    neighborhoodStrategy === "Geometry based"
+                        ? new GeometryBasedNeighborhood()
+                        : new GeometryBasedNeighborhood();
 
-            // Solve
-            const initialSolution = new PackingSolution(boxSize);
-            const solution = solver.solve(initialSolution, rectangles);
+                const adapter = new NeighborhoodAdapter(neighborhoodType);
+                const localSearchSolver = new LocalSearchSolver(adapter, 1000);
 
-            const endTime = performance.now();
-            const executionTime = endTime - startTime;
+                // Create a bad initial solution (one rectangle per box)
+                const initialSolution = createBadInitialSolution(
+                    rectangles,
+                    boxSize,
+                );
+                // TODO: Fix this algorithm
+                // now it has been temporary commented because it does
+                // const localSearchSolution = localSearchSolver.solve(initialSolution, [] as never[]);
+                const localSearchEndTime = performance.now();
+                const localSearchExecutionTime =
+                    localSearchEndTime - localSearchStartTime;
 
-            const result = convertSolutionToResult(
-                solution,
-                `Greedy FFD (${sortingCriteria === "area" ? "Area" : "Height"} Descending)`,
-                executionTime,
-            );
+                localSearchResult = convertSolutionToResult(
+                    initialSolution,
+                    `Local Search (${neighborhoodStrategy})`,
+                    localSearchExecutionTime,
+                );
+            } catch (error) {
+                console.error("Error running Local Search algorithm:", error);
+            }
 
-            onResult(result);
+            const comparisonResult: ComparisonResult = {
+                greedy: greedyResult,
+                localSearch: localSearchResult,
+            };
+
+            onResult(comparisonResult);
         } catch (error) {
-            console.error("Error running algorithm:", error);
+            console.error("Error running algorithms:", error);
         } finally {
             setRunningState(false);
         }
@@ -127,7 +162,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             <h3>Algorithm Controls</h3>
 
             <div className="input-group">
-                <label>Sorting Criteria:</label>
+                <label>Greedy - Sorting Criteria:</label>
                 <select
                     value={sortingCriteria}
                     onChange={(e) =>
@@ -141,31 +176,35 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             </div>
 
             <div className="input-group">
-                <label>Neighborhood Strategy:</label>
+                <label>Local Search - Neighborhood Strategy:</label>
                 <select
                     value={neighborhoodStrategy}
                     onChange={(e) =>
-                        setSearchCriteria(e.target.value as "Geometry based")
+                        setNeighborhoodStrategy(
+                            e.target.value as "Geometry based",
+                        )
                     }
                     disabled={isRunning}
                 >
-                    <option value="area">Geometry based</option>
+                    <option value="Geometry based">Geometry based</option>
                 </select>
             </div>
 
             <div className="input-group">
                 <button
                     className="button"
-                    onClick={runAlgorithm}
+                    onClick={runAlgorithms}
                     disabled={isRunning || rectangles.length === 0}
                 >
-                    {isRunning ? "Running..." : "Run Greedy Algorithm"}
+                    {isRunning
+                        ? "Running Both Algorithms..."
+                        : "Run Both Algorithms"}
                 </button>
             </div>
 
             {rectangles.length === 0 && (
                 <p className="error">
-                    Please add some rectangles before running the algorithm.
+                    Please add some rectangles before running the algorithms.
                 </p>
             )}
         </div>

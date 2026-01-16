@@ -6,6 +6,9 @@ export interface LocalPacker<C extends Candidate> {
     search(candidate: C): readonly C[];
 }
 
+export { NeighborhoodAdapter } from "./NeighborhoodAdapter";
+export { createBadInitialSolution } from "./initialSolution";
+
 export class LocalSearchSolver<S extends State> implements Algorithm<never, S> {
     private neighborhood: LocalPacker<S>;
     private maxIterations: number;
@@ -15,9 +18,10 @@ export class LocalSearchSolver<S extends State> implements Algorithm<never, S> {
         this.maxIterations = maxIterations;
     }
 
-    solve(initialState: S): S {
+    solve(initialState: S, _candidates: readonly never[]): S {
         let currentState = initialState;
-        let currentScore = currentState.evaluate();
+        const initialEvaluate = currentState.evaluate?.() ?? -Infinity;
+        let currentScore = initialEvaluate;
 
         let iteration = 0;
 
@@ -28,7 +32,7 @@ export class LocalSearchSolver<S extends State> implements Algorithm<never, S> {
             let bestScore = currentScore;
 
             for (const state of neighborStates) {
-                const score = state.evaluate();
+                const score = state.evaluate?.() ?? -Infinity;
 
                 // the the current score and current state is better than the best then update the best
                 if (score > bestScore) {
