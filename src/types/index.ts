@@ -5,6 +5,7 @@ import { OrderingStrategy } from "./strategy/orderStrategy";
 import { PackingVisualization } from "../components/PackingVisualization";
 import { PackingResult } from "./packingResult";
 import { PackingStrategy } from "./strategy/packingStrategy";
+import { NeighborhoodStrategy } from "./strategy/neighborhoodStrategy";}
 
 export type {
   State,
@@ -14,4 +15,5 @@ export type {
   PackingVisualization,
   PackingResult,
   PackingStrategy,
+  NeighborhoodStrategy
 };
