@@ -1,5 +1,5 @@
 import { Candidate } from "../candidate";
 
-export interface NeighborhoodStrategy<S> {
-    generateNeighbors(state: S): readonly S[];
+export interface NeighborhoodStrategy<SOL> {
+    generateNeighbors(solution: SOL): readonly SOL[];
 }

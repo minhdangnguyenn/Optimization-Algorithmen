@@ -3,8 +3,8 @@ import { PackingSolution } from "../../algorithm";
 import { Rectangle } from "../../algorithm";
 import { Box } from "../../algorithm";
 
-export class GeometryBasedNeighborhood {
-    generate(solution: PackingSolution): PackingSolution[] {
+export class GeometryBasedNeighborhood implements NeighborhoodStrategy<PackingSolution> {
+    generateNeighbors(solution: PackingSolution): PackingSolution[] {
         const neighbors: PackingSolution[] = [];
 
         for (const box of solution.boxes) {
