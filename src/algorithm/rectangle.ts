@@ -8,8 +8,8 @@ export class Rectangle implements Candidate {
 
   constructor(
     public readonly id: number,
-    public readonly width: number,
-    public readonly height: number,
+    public width: number,
+    public height: number,
   ) {
     this.id = id;
     this.width = width;

@@ -23,6 +23,20 @@ export class Box {
     this.utilization = (totalArea / this.area) * 100;
   }
 
+  removeRect(rectangle: Rectangle): void {
+    const index = this.rectangles.indexOf(rectangle);
+    if (index !== -1) {
+      this.rectangles.splice(index, 1);
+
+      // recompute utilization after removing rectangle
+      const totalArea = this.rectangles.reduce(
+        (sum, rect) => sum + rect.area,
+        0,
+      );
+      this.utilization = (totalArea / this.area) * 100;
+    }
+  }
+
   isOverlapped(rect1: Rectangle, rect2: Rectangle): boolean {
     const { x: x1, y: y1 } = rect1.position;
     const { x: x2, y: y2 } = rect2.position;
