@@ -13,7 +13,7 @@ import {
     AreaDescendingStrategy,
     HeightDescendingStrategy,
 } from "../strategy/selectionStrategy";
-import { GeometryBasedNeighborhood } from "../strategy/neighborhood";
+import { GeometryBasedNeighborhood } from "../strategy/neighborhoodStrategy";
 
 interface AlgorithmControlsProps {
     rectangles: Rectangle[];
