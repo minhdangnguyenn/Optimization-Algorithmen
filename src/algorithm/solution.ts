@@ -21,8 +21,10 @@ export class PackingSolution implements State {
         // Primary goal: minimize number of boxes (so negative boxes = higher score)
         // Secondary goal: maximize utilization
         const boxPenalty = -this.boxes.length * 1000;
-        const avgUtilization = this.boxes.reduce((sum, box) => sum + box.utilization, 0) / Math.max(1, this.boxes.length);
-        
+        const avgUtilization =
+            this.boxes.reduce((sum, box) => sum + box.utilization, 0) /
+            Math.max(1, this.boxes.length);
+
         // Return score where fewer boxes and higher utilization is better
         return boxPenalty + avgUtilization;
     }

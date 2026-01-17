@@ -6,7 +6,7 @@ import { OrderingStrategy } from "../../types/strategy/orderStrategy";
  * area desc and height desc
  */
 export class AreaDescendingStrategy implements OrderingStrategy<Rectangle> {
-  order(elements: readonly Rectangle[]): readonly Rectangle[] {
-    return [...elements].sort((a, b) => b.area - a.area);
-  }
+    order(elements: readonly Rectangle[]): readonly Rectangle[] {
+        return [...elements].sort((a, b) => b.area - a.area);
+    }
 }

@@ -9,15 +9,15 @@ import { GreedySolver } from "./greedy";
 import { LocalSearchSolver } from "./localsearch";
 
 export abstract class Algorithm<C extends Candidate, S extends State> {
-  abstract solve(initialState: S, candidates: readonly C[]): S;
+    abstract solve(initialState: S, candidates: readonly C[]): S;
 }
 
 export {
-  GreedySolver,
-  LocalSearchSolver,
-  BottomLeftPacking,
-  FirstFitPlacer,
-  Box,
-  PackingSolution,
-  Rectangle,
+    GreedySolver,
+    LocalSearchSolver,
+    BottomLeftPacking,
+    FirstFitPlacer,
+    Box,
+    PackingSolution,
+    Rectangle,
 };

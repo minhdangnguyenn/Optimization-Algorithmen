@@ -5,5 +5,5 @@ import { Box } from "../../algorithm/box";
  * It can be area desc or height desc
  */
 export interface PackingStrategy {
-  tryPut(rectangle: Rectangle, box: Box): boolean;
+    tryPut(rectangle: Rectangle, box: Box): boolean;
 }
