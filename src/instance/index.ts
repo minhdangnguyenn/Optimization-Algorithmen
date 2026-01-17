@@ -1,0 +1,1 @@
+import { InstanceGenerator } from "./instance";
