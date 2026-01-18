@@ -2,7 +2,7 @@ import type { Extender } from "../../types/extender";
 import { Box } from "../box";
 import type { Rectangle } from "../rectangle";
 import type { PackingSolution } from "../solution";
-import type { PackingStrategy } from "../../types/strategy/packing-strategy";
+import type { PackingStrategy } from "../../types/packing-strategy";
 
 /**
  * decide in which bx should the rectangle be put

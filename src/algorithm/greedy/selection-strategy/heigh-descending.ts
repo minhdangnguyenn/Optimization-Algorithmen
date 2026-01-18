@@ -1,4 +1,4 @@
-import { OrderingStrategy } from "../../../types/strategy/order-strategy";
+import { OrderingStrategy } from "../../../types/order-strategy";
 import { Rectangle } from "../../rectangle";
 
 export class HeightDescendingStrategy implements OrderingStrategy<Rectangle> {

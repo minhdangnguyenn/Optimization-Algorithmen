@@ -1,5 +1,5 @@
 import { Rectangle } from "../../rectangle";
-import { OrderingStrategy } from "../../../types/strategy/order-strategy";
+import { OrderingStrategy } from "../../../types/order-strategy";
 
 /**
  * Init two order strategies
