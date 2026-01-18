@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import type { PackingResult, ComparisonResult } from "../types";
 import {
     FirstFitPlacer,
-    Box,
     Rectangle,
     PackingSolution,
     BottomLeftPacking,
@@ -18,6 +17,8 @@ import {
     NeighborhoodAdapter,
     createBadInitialSolution,
 } from "../algorithm/localsearch";
+import { SelectionStrategy as GreedyStrategy } from "../types/strategy/greedy";
+import { NeighborhoodType } from "../types/strategy/localsearch";
 
 interface AlgorithmControlsProps {
     rectangles: Rectangle[];
@@ -33,11 +34,9 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     onRunningStateChange,
 }) => {
     const [isRunning, setIsRunning] = useState(false);
-    const [sortingCriteria, setSortingCriteria] = useState<"area" | "height">(
-        "area",
-    );
+    const [strategy, setSortingCriteria] = useState<GreedyStrategy>();
     const [neighborhoodStrategy, setNeighborhoodStrategy] =
-        useState<"Geometry based">("Geometry based");
+        useState<NeighborhoodType>(NeighborhoodType.GEOMETRY);
 
     const setRunningState = (running: boolean) => {
         setIsRunning(running);
@@ -87,7 +86,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             try {
                 const greedyStartTime = performance.now();
                 const selectionStrategy =
-                    sortingCriteria === "area"
+                    strategy === GreedyStrategy.AREA
                         ? new AreaDescendingStrategy()
                         : new HeightDescendingStrategy();
 
@@ -105,7 +104,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
 
                 greedyResult = convertSolutionToResult(
                     greedySolution,
-                    `Greedy FFD (${sortingCriteria === "area" ? "Area" : "Height"} Descending)`,
+                    `Greedy FFD`,
                     greedyExecutionTime,
                 );
             } catch (error) {
@@ -116,7 +115,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             try {
                 const localSearchStartTime = performance.now();
                 const neighborhoodType =
-                    neighborhoodStrategy === "Geometry based"
+                    neighborhoodStrategy === NeighborhoodType.GEOMETRY
                         ? new GeometryBasedNeighborhood()
                         : new GeometryBasedNeighborhood();
 
@@ -137,7 +136,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
 
                 localSearchResult = convertSolutionToResult(
                     initialSolution,
-                    `Local Search (${neighborhoodStrategy})`,
+                    `Local Search`,
                     localSearchExecutionTime,
                 );
             } catch (error) {
@@ -164,9 +163,9 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             <div className="input-group">
                 <label>Greedy - Sorting Criteria:</label>
                 <select
-                    value={sortingCriteria}
+                    value={strategy}
                     onChange={(e) =>
-                        setSortingCriteria(e.target.value as "area" | "height")
+                        setSortingCriteria(e.target.value as GreedyStrategy)
                     }
                     disabled={isRunning}
                 >
@@ -181,7 +180,7 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
                     value={neighborhoodStrategy}
                     onChange={(e) =>
                         setNeighborhoodStrategy(
-                            e.target.value as "Geometry based",
+                            e.target.value as NeighborhoodType,
                         )
                     }
                     disabled={isRunning}
