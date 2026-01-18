@@ -1,7 +1,7 @@
-import { NeighborhoodStrategy } from "../../types";
-import { PackingSolution } from "../../algorithm";
-import { Rectangle } from "../../algorithm";
-import { Box } from "../../algorithm";
+import { NeighborhoodStrategy } from "../../../types";
+import { PackingSolution } from "../..";
+import { Rectangle } from "../..";
+import { Box } from "../..";
 
 export class GeometryBasedNeighborhood implements NeighborhoodStrategy<PackingSolution> {
     getNeighbors(solution: PackingSolution): PackingSolution[] {

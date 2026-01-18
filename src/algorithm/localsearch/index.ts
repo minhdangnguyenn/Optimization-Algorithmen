@@ -6,8 +6,8 @@ export interface LocalPacker<C extends Candidate> {
     search(candidate: C): readonly C[];
 }
 
-export { NeighborhoodAdapter } from "./NeighborhoodAdapter";
-export { createBadInitialSolution } from "./initialSolution";
+export { NeighborhoodAdapter } from "./neighborhood-adapter";
+export { createBadInitialSolution } from "./initial-solution";
 
 export class LocalSearchSolver<S extends State> implements Algorithm<never, S> {
     private neighborhood: LocalPacker<S>;

@@ -30,12 +30,12 @@ export class TestInstanceGenerator {
     }
 }
 
-export class PackingInstance {
-    readonly boxLength: number;
-    readonly rectangles: readonly Rectangle[];
+// export class PackingInstance {
+//     readonly boxLength: number;
+//     readonly rectangles: readonly Rectangle[];
 
-    constructor(boxLength: number, rectangles: Rectangle[]) {
-        this.boxLength = boxLength;
-        this.rectangles = rectangles;
-    }
-}
+//     constructor(boxLength: number, rectangles: Rectangle[]) {
+//         this.boxLength = boxLength;
+//         this.rectangles = rectangles;
+//     }
+// }

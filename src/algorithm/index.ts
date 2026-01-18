@@ -3,8 +3,8 @@ import { State } from "../types/state";
 import { Rectangle } from "./rectangle";
 import { PackingSolution } from "./solution";
 import { Box } from "./box";
-import { BottomLeftPacking } from "./BottomLeftPacker";
-import { FirstFitPlacer } from "./FirstFitPlacer";
+import { BottomLeftPacking } from "./greedy/packer";
+import { FirstFitPlacer } from "./greedy/first-fit-placer";
 import { GreedySolver } from "./greedy";
 import { LocalSearchSolver } from "./localsearch";
 

@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { Rectangle } from "../algorithm/rectangle";
-import {
-    TestInstanceGenerator,
-    TestInstanceParams,
-} from "../testInstance/instance";
+import * as instance from "../test-instance/instance";
 
 interface RectangleInputProps {
     onAddRectangle: (rectangle: Rectangle) => void;
@@ -45,7 +42,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         if (newBoxSize <= 0) return;
         if (maxW > newBoxSize || maxH > newBoxSize) return;
 
-        let instanceParams: TestInstanceParams = {
+        let instanceParams: instance.TestInstanceParams = {
             numRectangles: count,
             minWidth: minW,
             maxWidth: maxW,
@@ -54,7 +51,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
             boxLength: newBoxSize,
         };
 
-        const instanceGenerator = new TestInstanceGenerator();
+        const instanceGenerator = new instance.TestInstanceGenerator();
         const generatedRectangles = instanceGenerator.generate(instanceParams);
 
         // Update box size if different from current
@@ -62,8 +59,16 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
             onBoxSizeChange(newBoxSize);
         }
 
+        // Convert Rectangle objects to plain objects for onAddMultipleRectangles
+        // Also ensure unique IDs by using the current rectangle count as offset
+        const rectanglesToAdd = generatedRectangles.map((rect, index) => ({
+            id: rectangles.length + index + 1,
+            width: rect.width,
+            height: rect.height,
+        }));
+
         // Add all rectangles at once to ensure unique IDs
-        onAddMultipleRectangles(generatedRectangles);
+        onAddMultipleRectangles(rectanglesToAdd);
     };
 
     return (

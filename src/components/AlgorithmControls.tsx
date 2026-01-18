@@ -11,14 +11,14 @@ import {
 import {
     AreaDescendingStrategy,
     HeightDescendingStrategy,
-} from "../strategy/selectionStrategy";
-import { GeometryBasedNeighborhood } from "../strategy/neighborhoodStrategy";
+} from "../algorithm/greedy/selection-strategy";
+import { GeometryBasedNeighborhood } from "../algorithm/localsearch/neighborhood";
 import {
     NeighborhoodAdapter,
     createBadInitialSolution,
 } from "../algorithm/localsearch";
-import { SelectionStrategy as GreedyStrategy } from "../types/strategy/greedy";
-import { NeighborhoodType } from "../types/strategy/localsearch";
+import { SelectionStrategy } from "../algorithm/greedy/selection-strategy";
+import { NeighborhoodType } from "../algorithm/localsearch/neighborhood";
 
 interface AlgorithmControlsProps {
     rectangles: Rectangle[];
@@ -34,7 +34,8 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
     onRunningStateChange,
 }) => {
     const [isRunning, setIsRunning] = useState(false);
-    const [strategy, setSortingCriteria] = useState<GreedyStrategy>();
+    const [selectionStrategy, setSelectionStrategy] =
+        useState<SelectionStrategy>(SelectionStrategy.AREA);
     const [neighborhoodStrategy, setNeighborhoodStrategy] =
         useState<NeighborhoodType>(NeighborhoodType.GEOMETRY);
 
@@ -85,20 +86,21 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             // Run Greedy algorithm
             try {
                 const greedyStartTime = performance.now();
-                const selectionStrategy =
-                    strategy === GreedyStrategy.AREA
+                const greedyStrategy =
+                    selectionStrategy === SelectionStrategy.AREA
                         ? new AreaDescendingStrategy()
                         : new HeightDescendingStrategy();
 
                 const packingStrategy = new BottomLeftPacking();
                 const placer = new FirstFitPlacer(boxSize, packingStrategy);
-                const solver = new GreedySolver(selectionStrategy, placer);
+                const solver = new GreedySolver(greedyStrategy, placer);
 
                 const initialSolution = new PackingSolution(boxSize);
                 const greedySolution = solver.solve(
                     initialSolution,
                     rectangles,
                 );
+
                 const greedyEndTime = performance.now();
                 const greedyExecutionTime = greedyEndTime - greedyStartTime;
 
@@ -163,9 +165,11 @@ export const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({
             <div className="input-group">
                 <label>Greedy - Sorting Criteria:</label>
                 <select
-                    value={strategy}
+                    value={selectionStrategy}
                     onChange={(e) =>
-                        setSortingCriteria(e.target.value as GreedyStrategy)
+                        setSelectionStrategy(
+                            e.target.value as SelectionStrategy,
+                        )
                     }
                     disabled={isRunning}
                 >

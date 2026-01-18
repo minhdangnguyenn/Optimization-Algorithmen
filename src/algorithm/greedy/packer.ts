@@ -1,6 +1,6 @@
-import type { Box } from "./box";
-import { Rectangle } from "./rectangle";
-import { PackingStrategy } from "../types";
+import type { Box } from "../box";
+import { Rectangle } from "../rectangle";
+import { PackingStrategy } from "../../types";
 
 export interface TryPutPosition {
     x: number;

@@ -1,7 +1,6 @@
 import { State, Extender, Candidate, OrderingStrategy } from "../../types";
 
 import { Algorithm } from "..";
-//export interface GreedyElement {}
 
 export class GreedySolver<
     C extends Candidate,

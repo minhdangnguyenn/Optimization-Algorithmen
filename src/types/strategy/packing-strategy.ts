@@ -1,6 +1,6 @@
 import { Rectangle } from "../../algorithm/rectangle";
 import { Box } from "../../algorithm/box";
-import { TryPutPosition } from "../../algorithm/BottomLeftPacker";
+import { TryPutPosition } from "../../algorithm/greedy/packer";
 
 /**
  * This class decides how rectangle be placed in a box

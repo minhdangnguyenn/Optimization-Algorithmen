@@ -1,5 +1,5 @@
-import { OrderingStrategy } from "../../types/strategy/orderStrategy";
-import { Rectangle } from "../../algorithm/rectangle";
+import { OrderingStrategy } from "../../../types/strategy/order-strategy";
+import { Rectangle } from "../../rectangle";
 
 export class HeightDescendingStrategy implements OrderingStrategy<Rectangle> {
     order(elements: readonly Rectangle[]): readonly Rectangle[] {
