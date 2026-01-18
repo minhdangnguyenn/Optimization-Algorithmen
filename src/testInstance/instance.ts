@@ -1,6 +1,6 @@
 import { Rectangle } from "../algorithm";
 
-export interface InstanceParams {
+export interface TestInstanceParams {
     numRectangles: number;
     minWidth: number;
     maxWidth: number;
@@ -9,8 +9,8 @@ export interface InstanceParams {
     boxLength: number;
 }
 
-export class InstanceGenerator {
-    generate(params: InstanceParams) {
+export class TestInstanceGenerator {
+    generate(params: TestInstanceParams): Rectangle[] {
         const rectangles: Rectangle[] = [];
 
         for (let i = 0; i < params.numRectangles; i++) {
@@ -25,6 +25,8 @@ export class InstanceGenerator {
 
             rectangles.push(new Rectangle(i, width, height));
         }
+
+        return rectangles;
     }
 }
 

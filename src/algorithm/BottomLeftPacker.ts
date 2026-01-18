@@ -2,8 +2,14 @@ import type { Box } from "./box";
 import { Rectangle } from "./rectangle";
 import { PackingStrategy } from "../types";
 
+export interface TryPutPosition {
+    x: number;
+    y: number;
+    rotated: boolean;
+}
+
 export class BottomLeftPacking implements PackingStrategy {
-    tryPut(rectangle: Rectangle, box: Box): boolean {
+    tryPut(rectangle: Rectangle, box: Box): TryPutPosition | null {
         const posistions: { x: number; y: number }[] = [{ x: 0, y: 0 }];
 
         for (const rect of box.rectangles) {
@@ -49,13 +55,16 @@ export class BottomLeftPacking implements PackingStrategy {
                     }
                 }
 
+                // if no overlapping and no overflow
                 if (!overlapping && !overflow) {
-                    box.addRect(rect);
-                    rect.setPosition(x, y);
-                    return true;
+                    // box.addRect(rect);
+                    // rect.setPosition(x, y);
+                    // return true;
+                    const rotated = rect.rotated;
+                    return { x, y, rotated };
                 }
             }
         }
-        return false;
+        return null;
     }
 }

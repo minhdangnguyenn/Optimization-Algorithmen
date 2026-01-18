@@ -14,9 +14,8 @@ function App(): React.ReactElement {
     const [isAlgorithmRunning, setIsAlgorithmRunning] =
         useState<boolean>(false);
 
-    const addRectangle = (id: number, width: number, height: number): void => {
-        const newRectangle = new Rectangle(id, width, height);
-        setRectangles((prev: Rectangle[]) => [...prev, newRectangle]);
+    const addRectangle = (rectangle: Rectangle): void => {
+        setRectangles((prev: Rectangle[]) => [...prev, rectangle]);
         setResult(null); // Clear previous results
     };
 

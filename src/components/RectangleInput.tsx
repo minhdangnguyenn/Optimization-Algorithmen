@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Rectangle } from "../algorithm/rectangle";
+import {
+    TestInstanceGenerator,
+    TestInstanceParams,
+} from "../testInstance/instance";
 
 interface RectangleInputProps {
-    onAddRectangle: (id: number, width: number, height: number) => void;
+    onAddRectangle: (rectangle: Rectangle) => void;
     onAddMultipleRectangles: (
         rectangles: Array<{ width: number; height: number }>,
     ) => void;
@@ -26,7 +30,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
     const [maxHeight, setMaxHeight] = useState<string>("100");
     const [instanceBoxSize, setInstanceBoxSize] = useState<string>("100");
 
-    const generateRandomInstance = () => {
+    const parseInputInt = () => {
         const count = parseInt(instanceCount);
         const minW = parseInt(minWidth);
         const maxW = parseInt(maxWidth);
@@ -41,29 +45,25 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
         if (newBoxSize <= 0) return;
         if (maxW > newBoxSize || maxH > newBoxSize) return;
 
+        let instanceParams: TestInstanceParams = {
+            numRectangles: count,
+            minWidth: minW,
+            maxWidth: maxW,
+            minHeight: minH,
+            maxHeight: maxH,
+            boxLength: newBoxSize,
+        };
+
+        const instanceGenerator = new TestInstanceGenerator();
+        const generatedRectangles = instanceGenerator.generate(instanceParams);
+
         // Update box size if different from current
         if (newBoxSize !== boxSize) {
             onBoxSizeChange(newBoxSize);
         }
 
-        // Generate all rectangles at once with proper unique IDs
-        const rectanglesToAdd = [];
-        for (let i = 0; i < count; i++) {
-            // Generate random integer dimensions between min/max for width and height separately
-            const randomWidth =
-                Math.floor(Math.random() * (maxW - minW + 1)) + minW;
-            const randomHeight =
-                Math.floor(Math.random() * (maxH - minH + 1)) + minH;
-
-            rectanglesToAdd.push({
-                id: i + 1,
-                width: randomWidth,
-                height: randomHeight,
-            });
-        }
-
         // Add all rectangles at once to ensure unique IDs
-        onAddMultipleRectangles(rectanglesToAdd);
+        onAddMultipleRectangles(generatedRectangles);
     };
 
     return (
@@ -159,7 +159,7 @@ export const RectangleInput: React.FC<RectangleInputProps> = ({
                 </div>
                 <button
                     className="button secondary"
-                    onClick={generateRandomInstance}
+                    onClick={parseInputInt}
                     disabled={
                         parseInt(instanceCount) <= 0 ||
                         parseInt(minWidth) <= 0 ||

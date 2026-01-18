@@ -39,4 +39,8 @@ export class Rectangle implements Candidate {
         const rect = new Rectangle(this.id, this.width, this.height);
         return rect;
     }
+
+    get rorated(): boolean {
+        return this.rorated;
+    }
 }

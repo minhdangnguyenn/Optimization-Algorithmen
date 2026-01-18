@@ -28,7 +28,19 @@ export class FirstFitPlacer implements Extender<Rectangle, PackingSolution> {
         // try to put a rectangle into a box by iterating boxes
         // if it is able, stop the extend process
         for (const box of solution.boxes) {
-            if (this.packingStrategy.tryPut(rectangle, box)) {
+            const position = this.packingStrategy.tryPut(rectangle, box);
+            if (position) {
+                // Place the rectangle at the returned position
+                // Handle rotation if needed
+                if (position.rotated && !rectangle.rotated) {
+                    // Rotate the rectangle dimensions (swap width and height)
+                    const tempWidth = rectangle.width;
+                    rectangle.width = rectangle.height;
+                    rectangle.height = tempWidth;
+                    rectangle.rotated = true;
+                }
+                rectangle.setPosition(position.x, position.y);
+                box.addRect(rectangle);
                 return solution;
             }
         }
